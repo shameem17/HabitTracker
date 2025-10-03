@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AppHomeView: View {
+struct HomeView: View {
     // private var
     @State private var selected = 0
     private let viewHelper = ViewHelper()
@@ -26,7 +26,7 @@ struct AppHomeView: View {
                               .frame(maxWidth: .infinity, maxHeight: .infinity)
                       }
                       if viewModel.showContent{
-                          ContentView(viewModel: viewModel)
+                          HomeContentView(viewModel: viewModel)
                           
                       }
                       
@@ -50,6 +50,6 @@ struct AppHomeView: View {
     }
 }
 
-extension AppHomeView{
+extension HomeView{
     
 }
