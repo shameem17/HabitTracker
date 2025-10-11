@@ -101,6 +101,7 @@ struct ThemeOptionRow: View {
     let theme: AppTheme
     let isSelected: Bool
     let onTap: () -> Void
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         Button(action: onTap) {
@@ -132,14 +133,31 @@ struct ThemeOptionRow: View {
                     .foregroundColor(isSelected ? .blue : .gray)
             }
             .padding(16)
-            .background(.gray.opacity(0.05))
+            .background(rowBackgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? .blue.opacity(0.3) : .clear, lineWidth: 1.5)
+                    .stroke(rowBorderColor, lineWidth: isSelected ? 1.5 : 0.5)
             )
         }
         .buttonStyle(PlainButtonStyle())
+    }
+    
+    // Dynamic colors based on theme and selection status
+    private var rowBackgroundColor: Color {
+        if isSelected {
+            return colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray6)
+        } else {
+            return colorScheme == .dark ? Color(.systemGray5) : Color(.systemBackground)
+        }
+    }
+    
+    private var rowBorderColor: Color {
+        if isSelected {
+            return .blue.opacity(0.4)
+        } else {
+            return colorScheme == .dark ? Color(.systemGray4) : Color(.systemGray5)
+        }
     }
     
     private func getThemeDescription(_ theme: AppTheme) -> String {
