@@ -15,10 +15,11 @@ struct Habit: Codable {
 
 // MARK: - HabitElement
 struct HabitElement: Codable {
+    let id = UUID()
     let name, icon: String?
 
     enum CodingKeys: String, CodingKey {
-        case name = "Name"
-        case icon = "Icon"
+        case name = "name"
+        case icon = "icon"
     }
 }

@@ -7,6 +7,7 @@
 import Foundation
 
 
+
 struct ReportData: Identifiable{
     let id = UUID()
     let date: String?
@@ -27,7 +28,9 @@ final class ViewModel: ObservableObject{
     @Published var apiLoding: Bool = false
     @Published var errorMessage: String?
     @Published var report: Report?
+    @Published var habits: [HabitElement] = []
     @Published var showContent: Bool = false
+    @Published var showAllHabits: Bool = false
     @Published var reportDict: [ReportData] = []
     private var todayReport: ReportElement?
     
@@ -62,8 +65,11 @@ final class ViewModel: ObservableObject{
         apiService.getHabits {[weak self] result in
             self?.resetLoading(loading: false)
             switch result{
-            case .success(let habits):
-                print("smm habits is \(habits)")
+            case .success(let habitResponse):
+                DispatchQueue.main.async{
+                    self?.showAllHabits = true
+                    self?.habits = habitResponse.habits ?? []
+                }
             case .failure(let error):
                 print("error is \(error)")
             }
@@ -106,6 +112,17 @@ extension ViewModel{
     func totalCount()->Int{
         return report?.totalHabitCount ?? 0
     }
+    
+    func isHabitsEmpty() -> Bool {
+        habits.forEach{ habit in
+            print("Habit: \(habit.name ?? "no name"), ID: \(habit.icon ?? "no icon")") // Example property access
+        }
+        return habits.isEmpty
+    }
+    
+    func getHabitsCount() -> Int {
+        return habits.count
+    }
 }
 
 extension ViewModel{
@@ -139,7 +156,7 @@ extension ViewModel{
         let today = Date()
         let calendar = Calendar.current
         let daysInThisMonth = self.daysPassedInCurrentMonth()
-        let last7Days: [String] = (0..<7).compactMap {
+        let last7Days: [String] = (0..<daysInThisMonth).compactMap {
             let date = calendar.date(byAdding: .day, value: -$0, to: today)!
             return dateFormatter.string(from: date)
         }
@@ -166,4 +183,5 @@ extension ViewModel{
         }
 //        print("smm reportDict is \(self.reportDict)")
     }
+    
 }
