@@ -15,24 +15,37 @@ struct BottomNav: View {
         HStack {
             Button(action: { selected = 0 }) {
                 VStack(alignment: .center) {
-                    Image(systemName: self.viewHelper.getTabBarIconName(currentSelected: selected, for: 0))
+                    Image(systemName: "house.fill")
                         .font(.system(size: 24))
-                        .foregroundColor(self.viewHelper.getTabBarColor(currentSelected: selected, for: 0))
+                        .foregroundColor(selected == 0 ? .primary : .secondary)
                     Text("Home")
                         .font(.body)
+                        .foregroundColor(selected == 0 ? .primary : .secondary)
                 }
             }
             Spacer()
+            
             Button(action: { selected = 1 }) {
-                Image(systemName: "chart.bar.fill")
-                    .font(.system(size: 24))
-                    .foregroundColor(selected == 1 ? .blue : .white)
+                VStack(alignment: .center) {
+                    Image(systemName: "chart.bar.fill")
+                        .font(.system(size: 24))
+                        .foregroundColor(selected == 1 ? .primary : .secondary)
+                    Text("Stats")
+                        .font(.body)
+                        .foregroundColor(selected == 1 ? .primary : .secondary)
+                }
             }
             Spacer()
+            
             Button(action: { selected = 2 }) {
-                Image(systemName: "gearshape.fill")
-                    .font(.system(size: 24))
-                    .foregroundColor(selected == 2 ? .blue : .white)
+                VStack(alignment: .center) {
+                    Image(systemName: "gearshape.fill")
+                        .font(.system(size: 24))
+                        .foregroundColor(selected == 2 ? .primary : .secondary)
+                    Text("Settings")
+                        .font(.body)
+                        .foregroundColor(selected == 2 ? .primary : .secondary)
+                }
             }
         }
         .padding()

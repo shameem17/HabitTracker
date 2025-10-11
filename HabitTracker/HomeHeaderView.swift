@@ -9,14 +9,15 @@ import SwiftUI
 
 struct HomeHeaderView: View {
     var dateText: String
+    var title: String
     
     var body: some View {
         HStack{
-            VStack{
+            VStack(alignment: .leading){
                 Text(dateText)
                     .font(.title3)
                     .foregroundStyle(.secondary)
-                Text("Habit Summary")
+                Text(title)
                     .bold()
                     .font(.largeTitle)
             }
@@ -24,12 +25,15 @@ struct HomeHeaderView: View {
             Image(systemName: "person.crop.circle")
                 .resizable()
                 .scaledToFill()
-                .frame(width: 60, height: 60)
+                .frame(width: 50, height: 50)
                 .clipShape(Circle())
                 .overlay(
                     Circle().stroke(Color.blue, lineWidth: 4) // optional border
                 )
                 .shadow(radius: 10)
+                .onTapGesture {
+                    print("smm profile open")
+                }
         }
         .padding(.horizontal, 24)
     }

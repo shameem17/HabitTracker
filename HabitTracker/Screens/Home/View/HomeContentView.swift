@@ -8,9 +8,6 @@
 import SwiftUI
 import Charts
 
-
-
-
 struct HomeContentView: View {
     @ObservedObject var viewModel: ViewModel
     @State private var progress: Double = 0.0
@@ -21,34 +18,23 @@ struct HomeContentView: View {
             
             HStack{
                 Spacer()
-                ContentCard(title: "Done",
-                            item: self.viewModel.reportDict,
+                ContentCard(item: self.viewModel.reportDict,
                             barColor: .green, done: true)
                 Spacer()
-                ContentCard(title: "Not Done",
-                            item: self.viewModel.reportDict,
+                ContentCard(item: self.viewModel.reportDict,
                             barColor: .red, done: false)
                 Spacer()
             }.padding(.horizontal, 20)
                 .padding(.top, 10)
             
-            LineChartView(data: viewModel.reportDict, max: viewModel.totalCount())
+            LineChartView(data: self.viewModel.reportDict, max: viewModel.totalCount())
             
             
         }
         .onAppear {
-            withAnimation(.easeOut(duration: 1.5)) {
-                progress = viewModel.getTodayProgress()
-            }
-            
             withAnimation(.spring(duration: 1.5)) {
-                
+                progress = viewModel.getTodayProgress()
             }
         }
     }
-}
-
-
-#Preview {
-    HomeView()
 }

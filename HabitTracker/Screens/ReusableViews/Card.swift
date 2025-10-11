@@ -7,16 +7,15 @@
 import SwiftUI
 
 struct ContentCard: View {
-    var title: String
     var item: [ReportData]
     var barColor: Color
     var done: Bool
     var body: some View {
         VStack(alignment: .leading) {
             HStack{
-                Text("\(title)")
+                Text("\(done ? "Done" : "Not Done")")
                     .multilineTextAlignment(.leading)
-                    .font(.title3)
+                    .font(.footnote)
                     .bold()
                     .foregroundStyle(.primary)
                     .padding(.leading, 10)
@@ -35,7 +34,10 @@ struct ContentCard: View {
                     .primary
                 )
                 .padding(.bottom, 8)
-            BarChartView(data: item, color: barColor, done: done)
+            BarChartView(data: BarChartData(report: item,
+                                            color: barColor,
+                                            done: done, max: 6))
+            //BarChartView(data: item, color: barColor, done: done)
             
             
         }

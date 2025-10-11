@@ -7,19 +7,25 @@
 import SwiftUI
 import Charts
 
-struct BarChartView: View {
-    var data: [ReportData]
+struct BarChartData{
+    var report: [ReportData]
     var color: Color
     var done: Bool
+    var max: Int
+}
+
+struct BarChartView: View {
+    var data: BarChartData
     
     var body: some View {
-        Chart(data) { item in
+        Chart(data.report) { item in
             BarMark(
                 x: .value("Day", item.day ?? "date"),
-                y: .value("Habits", done ? item.done ?? 0 : item.undone ?? 0)
+                y: .value("Habits", data.done ? item.done ?? 0 : item.undone ?? 0)
             )
-            .foregroundStyle(color.gradient)
+            .foregroundStyle(data.color.gradient)
         }
+        .chartYScale(domain: 0...data.max)
         .chartXAxis{
             AxisMarks { value in
                 if let date = value.as(String.self) {

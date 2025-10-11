@@ -15,6 +15,13 @@ struct ReportData: Identifiable{
     let undone: Int?
 }
 
+enum HomeTab: Int, CaseIterable {
+    case summary = 0
+    case today = 1
+    case settings = 2
+}
+
+
 final class ViewModel: ObservableObject{
     let apiService: HomeServiceProtocol
     @Published var apiLoding: Bool = false
@@ -98,6 +105,21 @@ extension ViewModel{
     }
     func totalCount()->Int{
         return report?.totalHabitCount ?? 0
+    }
+}
+
+extension ViewModel{
+    func getPageTitle(for selected: Int) -> String {
+        switch selected {
+        case 0:
+            return "Habits Summary"
+        case 1:
+            return "Today's Habits"
+        case 2:
+            return "Settings"
+        default:
+            return "Habit"
+        }
     }
 }
 
