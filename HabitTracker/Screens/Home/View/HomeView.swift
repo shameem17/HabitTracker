@@ -11,6 +11,7 @@ struct HomeView: View {
     // private var
     @State private var selected = 0
     @State private var showingAddHabit = false
+    @EnvironmentObject var themeManager: ThemeManager
     internal let viewHelper = ViewHelper()
     @StateObject internal var viewModel: ViewModel = ViewModel()
     
@@ -25,32 +26,32 @@ struct HomeView: View {
                 } else if selected == 1 {
                     TodayView
                 } else if selected == 2 {
-                    Text("Settings View")
-                        .font(.largeTitle)
-                        .bold()
+                    SettingsView()
                 }
                 
                 BottomNav(selected: $selected)
             }
             
-            // Floating Action Button
-            VStack {
-                Spacer()
-                HStack {
+            // Floating Action Button (only show on today tab)
+            if selected == 1 {
+                VStack {
                     Spacer()
-                    Button(action: {
-                        showingAddHabit = true
-                    }) {
-                        Image(systemName: "plus")
-                            .font(.system(size: 20, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 56, height: 56)
-                            .background(.blue)
-                            .clipShape(Circle())
-                            .shadow(radius: 8)
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            showingAddHabit = true
+                        }) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(.white)
+                                .frame(width: 56, height: 56)
+                                .background(.blue)
+                                .clipShape(Circle())
+                                .shadow(radius: 8)
+                        }
+                        .padding(.trailing, 20)
+                        .padding(.bottom, 100) // Position above bottom nav
                     }
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 100) // Position above bottom nav
                 }
             }
         }
@@ -59,9 +60,8 @@ struct HomeView: View {
             AddHabitView()
         }
         .task {
-            if viewModel.report == nil {
-                viewModel.getReport()
-            }
+            viewModel.getReport()
+            viewModel.getHabits()
         }
     }
 }
