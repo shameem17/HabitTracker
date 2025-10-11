@@ -59,7 +59,9 @@ struct HomeView: View {
             AddHabitView()
         }
         .task {
-            viewModel.getReport()
+            if viewModel.report == nil {
+                viewModel.getReport()
+            }
         }
     }
 }
