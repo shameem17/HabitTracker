@@ -39,6 +39,8 @@ struct AddHabitView: View {
                         TextField("Enter habit name", text: $habitName)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .font(.body)
+                            .autocapitalization(.words)
+                            .disableAutocorrection(true)
                     }
                     
                     // Icon Selection
