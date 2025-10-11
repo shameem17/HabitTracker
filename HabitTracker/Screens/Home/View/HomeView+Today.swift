@@ -24,11 +24,11 @@ extension HomeView{
                             .foregroundColor(.secondary)
                         
                         Text("No Habits Yet")
-                            .font(.title2)
+                            .font(.openSansTitle2)
                             .fontWeight(.semibold)
                         
                         Text("Add your first habit to start tracking your progress")
-                            .font(.body)
+                            .font(.openSansBody)
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
@@ -104,7 +104,7 @@ struct HabitRowView: View {
                 // Habit Name and Status
                 VStack(alignment: .leading, spacing: 4) {
                     Text(habit.name ?? "Unnamed Habit")
-                        .font(.headline)
+                        .font(.openSansHeadline)
                         .foregroundColor(.primary)
                         .strikethrough(isCompleted && !requiresTimeInput)
                     

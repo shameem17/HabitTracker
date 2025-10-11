@@ -19,7 +19,7 @@ struct BottomNav: View {
                         .font(.system(size: 24))
                         .foregroundColor(selected == 0 ? .primary : .secondary)
                     Text("Home")
-                        .font(.body)
+                        .font(.openSansBody)
                         .foregroundColor(selected == 0 ? .primary : .secondary)
                 }
             }
@@ -31,7 +31,7 @@ struct BottomNav: View {
                         .font(.system(size: 24))
                         .foregroundColor(selected == 1 ? .primary : .secondary)
                     Text("Stats")
-                        .font(.body)
+                        .font(.openSansBody)
                         .foregroundColor(selected == 1 ? .primary : .secondary)
                 }
             }
@@ -43,7 +43,7 @@ struct BottomNav: View {
                         .font(.system(size: 24))
                         .foregroundColor(selected == 2 ? .primary : .secondary)
                     Text("Settings")
-                        .font(.body)
+                        .font(.openSansBody)
                         .foregroundColor(selected == 2 ? .primary : .secondary)
                 }
             }

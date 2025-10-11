@@ -19,11 +19,11 @@ struct AddHabitView: View {
                 // Header
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Add New Habit")
-                        .font(.largeTitle)
+                        .font(.openSansLargeTitle)
                         .bold()
                     
                     Text("Create a new habit to track your progress")
-                        .font(.subheadline)
+                        .font(.openSansSubheadline)
                         .foregroundColor(.secondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -33,12 +33,12 @@ struct AddHabitView: View {
                     // Habit Name Field
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Habit Name")
-                            .font(.headline)
+                            .font(.openSansHeadline)
                             .foregroundColor(.primary)
                         
                         TextField("Enter habit name", text: $habitName)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .font(.body)
+                            .font(.openSansBody)
                             .autocapitalization(.words)
                             .disableAutocorrection(true)
                     }
@@ -46,7 +46,7 @@ struct AddHabitView: View {
                     // Icon Selection
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Choose Icon")
-                            .font(.headline)
+                            .font(.openSansHeadline)
                             .foregroundColor(.primary)
                         
                         Button(action: {
@@ -54,18 +54,18 @@ struct AddHabitView: View {
                         }) {
                             HStack {
                                 Image(systemName: selectedIcon)
-                                    .font(.system(size: 24))
+                                    .font(.openSansCustomRegular(size: 24))
                                     .foregroundColor(.primary)
                                     .frame(width: 40)
                                 
                                 Text("Tap to choose icon")
-                                    .font(.body)
+                                    .font(.openSansBody)
                                     .foregroundColor(.primary)
                                 
                                 Spacer()
                                 
                                 Image(systemName: "chevron.right")
-                                    .font(.system(size: 14))
+                                    .font(.openSansCustomRegular(size: 14))
                                     .foregroundColor(.secondary)
                             }
                             .padding()
@@ -84,7 +84,7 @@ struct AddHabitView: View {
                         saveHabit()
                     }) {
                         Text("Add Habit")
-                            .font(.headline)
+                            .font(.openSansHeadline)
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
@@ -97,7 +97,7 @@ struct AddHabitView: View {
                         dismiss()
                     }) {
                         Text("Cancel")
-                            .font(.headline)
+                            .font(.openSansHeadline)
                             .foregroundColor(.primary)
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
@@ -114,8 +114,6 @@ struct AddHabitView: View {
     }
     
     private func saveHabit() {
-        // Here you would typically save the habit using your service layer
-        // For now, we'll just dismiss the view
         print("Saving habit: \(habitName) with icon: \(selectedIcon)")
         dismiss()
     }

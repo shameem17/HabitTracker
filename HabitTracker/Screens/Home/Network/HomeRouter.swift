@@ -27,11 +27,11 @@ extension HomeRouter: BaseRouter {
         switch self {
         case .getHabits:
             return .get
-        case .getReport(let days):
+        case .getReport:
             return .get
-        case .updateHabit(let date, let habits):
+        case .updateHabit:
             return .post
-        case .addHabit(let name, let icon):
+        case .addHabit:
             return .post
         }
     }
@@ -40,11 +40,11 @@ extension HomeRouter: BaseRouter {
         switch self {
         case .getHabits:
             return nil
-        case .getReport(let days):
+        case .getReport:
             return nil
-        case .updateHabit(let date, let habits):
+        case .updateHabit:
             return nil
-        case .addHabit(let name, let icon):
+        case .addHabit:
             return nil
         }
     }

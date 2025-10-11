@@ -12,7 +12,6 @@ struct IconPickerView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var searchText = ""
     
-    // Comprehensive list of popular SF Symbols for habits
     private let allIcons = [
         // Health & Fitness
         "heart.fill", "heart", "lungs.fill", "brain.head.profile", "dumbbell.fill",
@@ -104,6 +103,8 @@ struct IconPickerView: View {
                     
                     TextField("Search icons...", text: $searchText)
                         .textFieldStyle(PlainTextFieldStyle())
+                        .autocorrectionDisabled()
+                        .autocapitalization(.none)
                 }
                 .padding()
                 .background(.gray.opacity(0.1))
@@ -148,7 +149,7 @@ struct IconPickerView: View {
                             .foregroundColor(.secondary)
                         
                         Text("No icons found")
-                            .font(.headline)
+                            .font(.openSansHeadline)
                             .foregroundColor(.secondary)
                         
                         Text("Try searching with different keywords")
