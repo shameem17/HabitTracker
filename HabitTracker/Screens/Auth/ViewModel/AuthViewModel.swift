@@ -199,6 +199,8 @@ class AuthViewModel: ObservableObject {
 extension AuthViewModel{
     func handleAuthInfo(authResult: AuthResponse){
         authStorage.saveAuthData(response: authResult)
-        isAuthenticated = true
+        DispatchQueue.main.async{[weak self] in
+            self?.isAuthenticated = true
+        }
     }
 }
