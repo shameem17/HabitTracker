@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct LoginView: View {
-    @StateObject private var authViewModel = AuthViewModel()
+    @EnvironmentObject var authViewModel: AuthViewModel
     @State private var showingSignup = false
     @State private var showPassword = false
-    
+    @State private var path = NavigationPath()
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $path) {
             GeometryReader { geometry in
                 ScrollView {
                     VStack(spacing: 32) {
@@ -31,10 +31,15 @@ struct LoginView: View {
                     .padding(.vertical, 40)
                 }
             }
+            .navigationDestination(for: String.self, destination: { _ in
+                SignupView()
+            })
         }
-        .sheet(isPresented: $showingSignup) {
-            SignupView()
-        }
+       
+       
+//        .sheet(isPresented: $showingSignup) {
+//            SignupView()
+//        }
         .alert("Error", isPresented: $authViewModel.showError) {
             Button("OK", role: .cancel) { }
         } message: {
@@ -219,6 +224,7 @@ extension LoginView {
             // Sign Up Button
             Button(action: {
                 showingSignup = true
+                path.append("SignupView")
             }) {
                 HStack {
                     Text("Don't have an account?")
@@ -233,8 +239,4 @@ extension LoginView {
             }
         }
     }
-}
-
-#Preview {
-    LoginView()
 }

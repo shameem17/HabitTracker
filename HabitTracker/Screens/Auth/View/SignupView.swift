@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SignupView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var authViewModel = AuthViewModel()
+    @EnvironmentObject var authViewModel: AuthViewModel
     @State private var showPassword = false
     @State private var showConfirmPassword = false
     
@@ -33,15 +33,6 @@ struct SignupView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                    .font(.openSansBody)
-                    .foregroundColor(.blue)
-                }
-            }
         }
         .alert("Error", isPresented: $authViewModel.showError) {
             Button("OK", role: .cancel) { }
@@ -373,8 +364,4 @@ struct PasswordRequirement: View {
                 .foregroundColor(isValid ? .green : .secondary)
         }
     }
-}
-
-#Preview {
-    SignupView()
 }

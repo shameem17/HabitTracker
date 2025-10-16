@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeHeaderView: View {
     var dateText: String
     var title: String
+    @Binding var showProfile: Bool
     
     var body: some View {
         HStack{
@@ -31,6 +32,7 @@ struct HomeHeaderView: View {
                 )
                 .shadow(radius: 10)
                 .onTapGesture {
+                    showProfile = true
                     print("smm profile open")
                 }
         }
