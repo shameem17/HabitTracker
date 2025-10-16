@@ -11,6 +11,7 @@ enum HomeRouter{
     case getReport(days: String)
     case updateHabit(date: String, habits: [String: String])
     case addHabit(name: String, icon: String)
+    case profile
 }
 
 
@@ -20,7 +21,18 @@ extension HomeRouter: BaseRouter {
     }
     
     var path: String {
-        return "/\(Path.apiKey)/exec"
+        switch self {
+        case .getHabits:
+            return Path.getHabits
+        case .getReport(_):
+            return Path.getReport
+        case .updateHabit(_, _):
+            return Path.updateHabit
+        case .addHabit(_, _):
+            return Path.addHabit
+        case .profile:
+            return Path.profile
+        }
     }
     
     var method: HTTPMethod {
@@ -33,20 +45,15 @@ extension HomeRouter: BaseRouter {
             return .post
         case .addHabit:
             return .post
+        case .profile:
+            return .get
         }
     }
     
     var headers: [String : String]? {
-        switch self {
-        case .getHabits:
-            return nil
-        case .getReport:
-            return nil
-        case .updateHabit:
-            return nil
-        case .addHabit:
-            return nil
-        }
+        return [
+            "Authorization": "Bearer \(AuthStorage.shared.getAuthToken() ?? "")"
+         ]
     }
     
     var body: [String : Any]? {
@@ -79,6 +86,8 @@ extension HomeRouter: BaseRouter {
                 "action": "addHabit",
                 "habit": ["name": name, "icon": icon].debugDescription
             ]
+        default:
+            return nil
         }
     }
     

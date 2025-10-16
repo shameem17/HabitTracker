@@ -39,14 +39,14 @@ struct ProfileView: View {
                     SettingsRow(
                         icon: "person.fill",
                         title: "Name",
-                        value: user.name,
+                        value: user.profile?.name ?? "User",
                         showChevron: false
                     )
                     
                     SettingsRow(
                         icon: "envelope.fill",
                         title: "Email",
-                        value: user.email,
+                        value: user.profile?.email ?? "n/a",
                         showChevron: false
                     )
                 }

@@ -13,11 +13,15 @@ class AuthStorage {
     
     private init() {}
     
-    func saveAuthData(user: User, token: String) {
+    func saveUser(user: User) {
         if let userData = try? JSONEncoder().encode(user) {
             UserDefaults.standard.set(userData, forKey: "user_data")
         }
-        UserDefaults.standard.set(token, forKey: "auth_token")
+    }
+    func saveAuthData(response: AuthResponse) {
+       
+        UserDefaults.standard.set(response.idToken, forKey: "auth_token")
+        UserDefaults.standard.set(response.refreshToken, forKey: "refreshToken")
     }
     
     func getCurrentUser() -> User? {
@@ -32,9 +36,14 @@ class AuthStorage {
         return UserDefaults.standard.string(forKey: "auth_token")
     }
     
+    func getRefreshToken() -> String? {
+        return UserDefaults.standard.string(forKey: "refreshToken")
+    }
+    
     func clearAuthData() {
         UserDefaults.standard.removeObject(forKey: "auth_token")
         UserDefaults.standard.removeObject(forKey: "user_data")
+        UserDefaults.standard.removeObject(forKey: "refreshToken")
     }
     
     var isAuthenticated: Bool {

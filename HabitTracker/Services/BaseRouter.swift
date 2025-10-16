@@ -54,10 +54,19 @@ extension BaseRouter {
         }
         
         headers?.forEach { key, value in
-            urlRequest.addValue(key, forHTTPHeaderField: value)
+            urlRequest.addValue(value, forHTTPHeaderField: key)
         }
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
-      
+        // Add body data for POST/PUT requests
+        if let body = body {
+            do {
+                urlRequest.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
+               
+            } catch {
+                throw NetworkError.requestFailed
+            }
+        }
         
         return urlRequest
     }

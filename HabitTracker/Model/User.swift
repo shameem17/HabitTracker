@@ -9,33 +9,26 @@ import Foundation
 
 // MARK: - User Model
 struct User: Codable {
-    let id: String
-    let email: String
-    let name: String
-    let createdAt: String?
-    let updatedAt: String?
+    let success: Bool?
+    let profile: Profile?
+    let habits: [HabitElement]?
+}
+// MARK: - Profile
+struct Profile: Codable {
+    let name, email: String?
+    let createdAt: CreatedAt?
 }
 
-// MARK: - Authentication Request Models
-struct LoginRequest: Codable {
-    let email: String
-    let password: String
+// MARK: - CreatedAt
+struct CreatedAt: Codable {
+    let seconds, nanoseconds: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case seconds = "_seconds"
+        case nanoseconds = "_nanoseconds"
+    }
 }
 
-struct SignupRequest: Codable {
-    let name: String
-    let email: String
-    let password: String
-    let confirmPassword: String
-}
-
-// MARK: - Authentication Response Models
-struct AuthResponse: Codable {
-    let success: Bool
-    let message: String
-    let user: User?
-    let token: String?
-}
 
 // MARK: - Validation Error Model
 struct ValidationError {

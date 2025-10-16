@@ -35,11 +35,6 @@ struct LoginView: View {
                 SignupView()
             })
         }
-       
-       
-//        .sheet(isPresented: $showingSignup) {
-//            SignupView()
-//        }
         .alert("Error", isPresented: $authViewModel.showError) {
             Button("OK", role: .cancel) { }
         } message: {

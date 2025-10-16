@@ -42,6 +42,24 @@ final class ViewModel: ObservableObject{
         self.dateHelper = dateHelper
     }
     
+    func getData(){
+        getReport()
+    }
+    
+    func getProfile(){
+        self.resetLoading(loading: true)
+        apiService.getProfile {[weak self] result in
+            self?.resetLoading(loading: false)
+            switch result{
+            case .success(let user):
+                print("user info is \(user)")
+            case .failure(let error):
+                print("error is \(error)")
+            }
+        }
+    }
+        
+    
     func getReport(){
         self.resetLoading(loading: true)
         apiService.getReport(day: "7"){[weak self] result in

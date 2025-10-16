@@ -18,7 +18,6 @@ typealias CompletionHandler<T: Decodable> = (Result<T, NetworkError>) -> Void
 
 protocol NetwoserkServiceProtocol {
     static func fetchData<T: Decodable>(request: BaseRouter, completion: @escaping CompletionHandler<T>)
-    
 }
 
 final class NetworkService: NetwoserkServiceProtocol{
@@ -28,7 +27,9 @@ final class NetworkService: NetwoserkServiceProtocol{
     static func fetchData<T: Decodable>(request: BaseRouter, completion: @escaping CompletionHandler<T>) {
         do{
             let request = try request.asURLRequest()
-           // print("request is \(request.url?.absoluteString ?? "")")
+            print("request is \(request.url?.absoluteString ?? "")")
+            print("request headers is \(request.allHTTPHeaderFields ?? [:])")
+            print("request body is \(String(data: request.httpBody ?? Data(), encoding: .utf8) ?? "")")
             let task = URLSession.shared.dataTask(with: request) { data, response, error  in
                 if let _ = error {
                     completion(.failure(.requestFailed))
@@ -37,7 +38,7 @@ final class NetworkService: NetwoserkServiceProtocol{
                 if let data = data{
                     do{
                         let decodedData = try JSONDecoder().decode(T.self, from: data)
-                      //  print("decoded data is \(decodedData)")
+                        print("decoded data is \(decodedData)")
                         completion(.success(decodedData))
                     }catch{
                         completion(.failure(.decodingFailed))
@@ -53,5 +54,10 @@ final class NetworkService: NetwoserkServiceProtocol{
             print("url decoding error \(error.localizedDescription)")
         }
     }
+    
+    private func refreshToken(){
+        
+    }
+
     
 }

@@ -44,24 +44,20 @@ class AuthViewModel: ObservableObject {
         
         isLoading = true
         errorMessage = nil
-        
-        do {
-            let request = LoginRequest(email: loginEmail, password: loginPassword)
-            let response = try await authService.login(request: request)
-            
-            if response.success, let user = response.user, let token = response.token {
-                authStorage.saveAuthData(user: user, token: token)
-                currentUser = user
-                isAuthenticated = true
-                clearLoginForm()
-            } else {
-                showError(response.message)
+        let request = LoginRequest(email: loginEmail, password: loginPassword)
+        authService.login(data: request) { result in
+            DispatchQueue.main.async{
+                self.isLoading = false
             }
-        } catch {
-            showError("Network error. Please try again.")
+            switch result{
+            case .success(let authResult):
+                self.handleAuthInfo(authResult: authResult)
+            case .failure(let error):
+                self.errorMessage = error.localizedDescription
+            }
         }
         
-        isLoading = false
+       
     }
     
     func signup() async {
@@ -70,28 +66,25 @@ class AuthViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        do {
-            let request = SignupRequest(
-                name: signupName,
-                email: signupEmail,
-                password: signupPassword,
-                confirmPassword: signupConfirmPassword
-            )
-            let response = try await authService.signup(request: request)
-            
-            if response.success, let user = response.user, let token = response.token {
-                authStorage.saveAuthData(user: user, token: token)
-                currentUser = user
-                isAuthenticated = true
-                clearSignupForm()
-            } else {
-                showError(response.message)
+        
+        let request = SignupRequest(
+            name: signupName,
+            email: signupEmail,
+            password: signupPassword,
+            confirmPassword: signupConfirmPassword
+        )
+        authService.signup(data: request) { result in
+            DispatchQueue.main.async{
+                self.isLoading = false
             }
-        } catch {
-            showError("Network error. Please try again.")
+            switch result{
+            case .success(let authResult):
+                self.handleAuthInfo(authResult: authResult)
+            case .failure(let error):
+                self.errorMessage = error.localizedDescription
+            }
         }
         
-        isLoading = false
     }
     
     func logout() async {
@@ -200,5 +193,12 @@ class AuthViewModel: ObservableObject {
     private func checkAuthenticationStatus() {
         currentUser = authStorage.getCurrentUser()
         isAuthenticated = authStorage.isAuthenticated
+    }
+}
+
+extension AuthViewModel{
+    func handleAuthInfo(authResult: AuthResponse){
+        authStorage.saveAuthData(response: authResult)
+        isAuthenticated = true
     }
 }
