@@ -62,7 +62,7 @@ class AuthViewModel: ObservableObject {
             }
         }
         
-       
+        
     }
     
     func signup() async {
@@ -92,19 +92,38 @@ class AuthViewModel: ObservableObject {
         
     }
     
-    @objc func logout() async {
-        isLoading = true
-        
-        do {
-            _ = try await authService.logout()
-            authStorage.clearAuthData()
-            currentUser = nil
-            isAuthenticated = false
-        } catch {
-            showError("Error logging out. Please try again.")
+    func getProfile(){
+        authService.getProfile {[weak self] result in
+            switch result{
+            case .success(let user):
+                print("user info is \(user)")
+                self?.handleUser(user: user)
+            case .failure(let error):
+                if error == .authRequired{
+                    self?.logout()
+                }
+                print("error is \(error)")
+            }
         }
-        
-        isLoading = false
+    }
+    
+    private func handleUser(user: User){
+        DispatchQueue.main.async{[weak self] in
+            
+            self?.currentUser = user
+            AuthStorage.shared.saveUser(user: user)
+        }
+    }
+    
+    
+    @objc func logout() {
+        DispatchQueue.main.async{[weak self] in
+            self?.isLoading = true
+            self?.authStorage.clearAuthData()
+            self?.currentUser = nil
+            self?.isAuthenticated = false
+            self?.isLoading = false
+        }
     }
     
     // MARK: - Validation Methods
@@ -206,6 +225,7 @@ extension AuthViewModel{
         authStorage.saveAuthData(response: authResult)
         DispatchQueue.main.async{[weak self] in
             self?.isAuthenticated = true
+            self?.getProfile()
         }
     }
 }

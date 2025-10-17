@@ -26,8 +26,13 @@ struct HomeView: View {
                     
                     // Main Content Area
                     if selected == 0 {
-                        // Show empty state if no habits, otherwise show HomeScreen
-                        if viewModel.totalCount() == 0 {
+                        if viewModel.apiLoding {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .green))
+                                .scaleEffect(2)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        }
+                       else if viewModel.totalCount() == 0 && !viewModel.apiLoding {
                             EmptyStateView()
                         } else {
                             HomeScreen
@@ -77,7 +82,6 @@ struct HomeView: View {
         .task {
             viewModel.getReport()
             viewModel.getHabits()
-            viewModel.getProfile()
         }
     }
 }

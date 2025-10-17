@@ -11,6 +11,7 @@ import Foundation
 protocol AuthServiceProtocol {
     func login(data: LoginRequest,  completion: @escaping CompletionHandler<AuthResponse>)
     func signup(data: SignupRequest,  completion: @escaping CompletionHandler<AuthResponse>)
+    func getProfile( completion: @escaping CompletionHandler<User>)
     func logout() async throws -> Bool
     func validateToken() async throws -> Bool
 }
@@ -26,10 +27,12 @@ struct AuthService: AuthServiceProtocol {
         return NetworkService.fetchData(request: AuthRouter.signup(request: data), completion: completion)
     }
     
+    func getProfile( completion: @escaping CompletionHandler<User>) {
+        return NetworkService.fetchData(request: HomeRouter.profile, completion: completion)
+    }
+    
     func logout() async throws -> Bool {
-        // Clear stored token
-        UserDefaults.standard.removeObject(forKey: "auth_token")
-        UserDefaults.standard.removeObject(forKey: "user_data")
+       
         return true
     }
     

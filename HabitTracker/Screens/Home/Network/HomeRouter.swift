@@ -57,35 +57,30 @@ extension HomeRouter: BaseRouter {
     }
     
     var body: [String : Any]? {
-        return nil
-    }
-    
-    var parameters: [String : String]? {
         switch self {
-        case .getHabits:
-            return [
-                "action": "getHabits",
-                "key": Path.apiSecret
-            ]
-        case .getReport(let days):
-            return  [
-                "action": "getReport",
-                "days": days,
-                "key": Path.apiSecret
-            ]
         case .updateHabit(let date, let habits):
             return [
-                "auth": Path.apiSecret,
                 "action": "updateHabit",
                 "date": date,
                 "habits": habits.debugDescription
             ]
         case .addHabit(let name, let icon):
             return [
-                "auth": Path.apiSecret,
-                "action": "addHabit",
                 "habit": ["name": name, "icon": icon].debugDescription
             ]
+        default:
+            return nil
+        }
+    }
+    
+    var parameters: [String : String]? {
+        switch self {
+       
+        case .getReport(let days):
+            return  [
+                "days": days,
+            ]
+       
         default:
             return nil
         }

@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct ContentCard: View {
-    var item: [ReportData]
+    @ObservedObject var viewModel: ViewModel
     var barColor: Color
     var done: Bool
     var body: some View {
@@ -33,10 +33,10 @@ struct ContentCard: View {
                     .primary
                 )
                 .padding(.bottom, 8)
-            BarChartView(data: BarChartData(report: item,
-                                            color: barColor,
-                                            done: done, max: 6))
-            //BarChartView(data: item, color: barColor, done: done)
+            BarChartView(data: BarChartData(report: viewModel.get7DaysReport(),
+                                            color: barColor, total: viewModel.totalCount(),
+                                            done: done, max: viewModel.totalCount() + 2))
+        
             
             
         }

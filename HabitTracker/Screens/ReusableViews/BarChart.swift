@@ -10,8 +10,14 @@ import Charts
 struct BarChartData{
     var report: [ReportData]
     var color: Color
+    var total: Int
     var done: Bool
     var max: Int
+    
+    func count(item: ReportData) -> Int{
+        print("smm \(done), count = \(self.done ? item.done ?? 0 : self.total - (item.done ?? 0))")
+        return self.done ? item.done ?? 0 : self.total - (item.done ?? 0)
+    }
 }
 
 struct BarChartView: View {
@@ -21,7 +27,7 @@ struct BarChartView: View {
         Chart(data.report) { item in
             BarMark(
                 x: .value("Day", item.day ?? "date"),
-                y: .value("Habits", data.done ? item.done ?? 0 : item.undone ?? 0)
+                y: .value("Habits", data.count(item: item))
             )
             .foregroundStyle(data.color.gradient)
         }

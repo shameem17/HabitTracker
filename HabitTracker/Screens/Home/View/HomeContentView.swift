@@ -18,10 +18,12 @@ struct HomeContentView: View {
             
             HStack{
                 Spacer()
-                ContentCard(item: self.viewModel.reportDict,
+                //done view
+                ContentCard(viewModel: self.viewModel,
                             barColor: .green, done: true)
                 Spacer()
-                ContentCard(item: self.viewModel.reportDict,
+                //not done view
+                ContentCard(viewModel: self.viewModel,
                             barColor: .red, done: false)
                 Spacer()
             }.padding(.horizontal, 20)

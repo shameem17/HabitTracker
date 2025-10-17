@@ -16,18 +16,13 @@ struct Report: Codable {
 
 // MARK: - ReportElement
 struct ReportElement: Codable {
-    let date, day, bedTime, wakeupTime: String?
-    let fajar, asr, dhuhr, badHabit: String?
-    let done, undone: Int?
+    let date: String?
+    let done: Int?
+    let undone: Int?
+    let habits: [HabitsReport]?
+}
 
-    enum CodingKeys: String, CodingKey {
-        case date, day
-        case bedTime = "Bed Time"
-        case wakeupTime = "Wakeup Time"
-        case fajar = "Fajar"
-        case asr = "Asr"
-        case dhuhr = "Dhuhr"
-        case badHabit = "Bad Habit"
-        case done, undone
-    }
+struct HabitsReport: Codable {
+    let name: String?
+    let completed: Bool?
 }

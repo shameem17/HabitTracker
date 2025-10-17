@@ -45,22 +45,6 @@ final class ViewModel: ObservableObject{
     func getData(){
         getReport()
     }
-    
-    func getProfile(){
-        self.resetLoading(loading: true)
-        apiService.getProfile {[weak self] result in
-            self?.resetLoading(loading: false)
-            switch result{
-            case .success(let user):
-                print("user info is \(user)")
-            case .failure(let error):
-                if error == .authRequired{
-                    self?.logout()
-                }
-                print("error is \(error)")
-            }
-        }
-    }
         
     
     func getReport(){
@@ -75,7 +59,6 @@ final class ViewModel: ObservableObject{
                     self?.buildLast7DaysDict(from: report)
                     self?.showContent = true
                 }
-               // print("smm report is \(report)")
             case .failure(let error):
                 if error == .authRequired{
                     self?.logout()
@@ -135,6 +118,7 @@ extension ViewModel{
             dateHelper.isDateToday(date: $0.date ?? "")
         })
         todayReport = filterReport.first
+        print("smm today report = \(String(describing: todayReport))")
     }
     func totalCount()->Int{
         return report?.totalHabitCount ?? 0
@@ -194,7 +178,7 @@ extension ViewModel{
 
         for date in last7Days {
             let doneCount = reportDict[date]?[0] ?? 0
-            let undoneCount = reportDict[date]?[1] ?? totalCount()
+            let undoneCount =  totalCount() - doneCount
             result[date] = [doneCount, undoneCount]
         }
         let x = result.sorted { lhs, rhs in
@@ -203,10 +187,19 @@ extension ViewModel{
         for item in x {
             let date = item.key
             let d = item.value[0]
-            let u = item.value[1]
+            let u = self.totalCount() - d
             let day = self.dateHelper.getDayName(date: date)
             let data = ReportData(date: date, day: day, done: d, undone: u)
+            print("smm report data = \(d)")
             self.reportDict.append(data)
+        }
+    }
+    
+    func get7DaysReport() -> [ReportData] {
+        if reportDict.count >= 7 {
+            return Array(reportDict.suffix(7))
+        } else {
+            return reportDict
         }
     }
     
