@@ -13,4 +13,5 @@ enum AppPrefix {
     static let accessTokenKey = "access_token"
     static let refreshTokenKey = "refresh_token"
     static let userKey = "user_data"
+    static let maxRetries = 2
 }

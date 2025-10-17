@@ -36,6 +36,11 @@ class AuthViewModel: ObservableObject {
     init(authService: AuthServiceProtocol = AuthService()) {
         self.authService = authService
         checkAuthenticationStatus()
+        NotificationCenter.default.addObserver(self, selector: #selector(logout), name: .logout, object: nil)
+    }
+    
+    deinit{
+        NotificationCenter.default.removeObserver(self, name: .logout, object: nil)
     }
     
     // MARK: - Authentication Methods
@@ -87,7 +92,7 @@ class AuthViewModel: ObservableObject {
         
     }
     
-    func logout() async {
+    @objc func logout() async {
         isLoading = true
         
         do {

@@ -12,6 +12,7 @@ enum NetworkError: Error {
     case requestFailed
     case decodingFailed
     case unknown
+    case authRequired
 }
 
 typealias CompletionHandler<T: Decodable> = (Result<T, NetworkError>) -> Void
@@ -24,6 +25,7 @@ final class NetworkService: NetwoserkServiceProtocol{
     
     private init() {}
     
+    
     static func fetchData<T: Decodable>(request: BaseRouter, completion: @escaping CompletionHandler<T>) {
         fetchDataWithRetry(request: request, retryCount: 0, completion: completion)
     }
@@ -31,7 +33,6 @@ final class NetworkService: NetwoserkServiceProtocol{
     private static func fetchDataWithRetry<T: Decodable>(
         request: BaseRouter,
         retryCount: Int,
-        maxRetries: Int = 3,
         completion: @escaping CompletionHandler<T>
     ) {
         do{
@@ -53,8 +54,8 @@ final class NetworkService: NetwoserkServiceProtocol{
                     print("HTTP Status Code: \(httpResponse.statusCode)")
                     
                     // Handle 401/403 with token refresh mechanism
-                    if (httpResponse.statusCode == 401 || httpResponse.statusCode == 403) && retryCount < maxRetries {
-                        print("Received \(httpResponse.statusCode) error. Attempting token refresh... (Attempt \(retryCount + 1)/\(maxRetries + 1))")
+                    if (httpResponse.statusCode == 401 || httpResponse.statusCode == 403) && retryCount < AppPrefix.maxRetries {
+                        print("Received \(httpResponse.statusCode) error. Attempting token refresh... (Attempt \(retryCount + 1)/\(AppPrefix.maxRetries + 1))")
                         
                         // Call refresh token API
                         refreshToken { success in
@@ -63,12 +64,11 @@ final class NetworkService: NetwoserkServiceProtocol{
                                 fetchDataWithRetry(
                                     request: request,
                                     retryCount: retryCount + 1,
-                                    maxRetries: maxRetries,
                                     completion: completion
                                 )
                             } else {
                                 print("Token refresh failed. Authentication required.")
-                                completion(.failure(.requestFailed))
+                                completion(.failure(.authRequired))
                             }
                         }
                         return

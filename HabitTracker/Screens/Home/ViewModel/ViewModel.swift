@@ -33,7 +33,7 @@ final class ViewModel: ObservableObject{
     @Published var showAllHabits: Bool = false
     @Published var reportDict: [ReportData] = []
     private var todayReport: ReportElement?
-    
+    private var alreadyLoggedOut: Bool = false
     private var dateHelper: DateHelperProtocol
     
     init(apiService: HomeServiceProtocol = HomeService(),
@@ -54,6 +54,9 @@ final class ViewModel: ObservableObject{
             case .success(let user):
                 print("user info is \(user)")
             case .failure(let error):
+                if error == .authRequired{
+                    self?.logout()
+                }
                 print("error is \(error)")
             }
         }
@@ -74,6 +77,9 @@ final class ViewModel: ObservableObject{
                 }
                // print("smm report is \(report)")
             case .failure(let error):
+                if error == .authRequired{
+                    self?.logout()
+                }
                 print("error is \(error)")
             }
         }
@@ -89,6 +95,9 @@ final class ViewModel: ObservableObject{
                     self?.habits = habitResponse.habits ?? []
                 }
             case .failure(let error):
+                if error == .authRequired{
+                    self?.logout()
+                }
                 print("error is \(error)")
             }
         }
@@ -199,7 +208,14 @@ extension ViewModel{
             let data = ReportData(date: date, day: day, done: d, undone: u)
             self.reportDict.append(data)
         }
-//        print("smm reportDict is \(self.reportDict)")
     }
     
+}
+extension ViewModel{
+    func logout(){
+        if !alreadyLoggedOut{
+            alreadyLoggedOut = true
+            NotificationCenter.default.post(name: .logout, object: nil)
+        }
+    }
 }

@@ -17,30 +17,21 @@ struct HomeView: View {
     @State var showProfile: Bool = false
     
     var body: some View {
-        ZStack {
-            VStack {
-                Spacer()
-                HomeHeaderView(dateText: self.viewModel.formattedToday(),
-                               title: self.viewModel.getPageTitle(for: selected), showProfile: $showProfile)
-                if selected == 0 {
-                     HomeScreen
-                } else if selected == 1 {
-                    TodayView
-                } else if selected == 2 {
-                    SettingsView()
-                }
-                
-                BottomNav(selected: $selected)
-            }
-            
-            // Floating Action Button (only show on today tab)
-            if selected == 1 {
+        NavigationStack {
+            ZStack {
                 VStack {
                     Spacer()
                     HomeHeaderView(dateText: self.viewModel.formattedToday(),
                                    title: self.viewModel.getPageTitle(for: selected), showProfile: $showProfile)
+                    
+                    // Main Content Area
                     if selected == 0 {
-                         HomeScreen
+                        // Show empty state if no habits, otherwise show HomeScreen
+                        if viewModel.totalCount() == 0 {
+                            EmptyStateView()
+                        } else {
+                            HomeScreen
+                        }
                     } else if selected == 1 {
                         TodayView
                     } else if selected == 2 {
@@ -49,7 +40,7 @@ struct HomeView: View {
                     
                     BottomNav(selected: $selected)
                 }
-            
+                
                 // Floating Action Button (only show on today tab)
                 if selected == 1 {
                     VStack {
@@ -73,22 +64,22 @@ struct HomeView: View {
                     }
                 }
             }
+            .navigationDestination(isPresented: $showProfile) {
+                ProfileView()
+            }
         }
+        .navigationBarHidden(true)
+       
         .ignoresSafeArea(edges: .bottom)
         .sheet(isPresented: $showingAddHabit) {
             AddHabitView()
         }
-        .sheet(isPresented: $showProfile) {
-            ProfileView()
-        }
         .task {
             viewModel.getReport()
             viewModel.getHabits()
+            viewModel.getProfile()
         }
     }
 }
 
 
-#Preview{
-    HomeView()
-}
