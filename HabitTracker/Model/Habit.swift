@@ -17,9 +17,14 @@ struct Habit: Codable {
 struct HabitElement: Codable {
     let id = UUID()
     let name, icon: String?
+    var completed: Bool?
+    var isCompleted: Bool{
+        return completed ?? false
+    }
 
     enum CodingKeys: String, CodingKey {
         case name = "name"
         case icon = "icon"
+        case completed = "completed"
     }
 }

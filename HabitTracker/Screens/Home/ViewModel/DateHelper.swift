@@ -8,7 +8,7 @@
 import Foundation
 protocol DateHelperProtocol {
     func getTodayDate() -> String
-    func isDateToday(date: String) -> Bool
+    func isDateToday(date: String?) -> Bool
     func getDayName(date: String) ->String
 }
 
@@ -42,7 +42,9 @@ final class DateHelper: DateHelperProtocol {
             return ""
     }
     
-    func isDateToday(date: String) -> Bool{
+    func isDateToday(date: String?) -> Bool{
+        guard let date = date else { return false }
+            
         if let apiDate = formater.date(from: date) {
             let calendar = Calendar.current
             if calendar.isDateInToday(apiDate) {

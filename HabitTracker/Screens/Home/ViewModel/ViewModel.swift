@@ -27,7 +27,7 @@ final class ViewModel: ObservableObject{
     let apiService: HomeServiceProtocol
     @Published var apiLoding: Bool = false
     @Published var errorMessage: String?
-    @Published var report: Report?
+    private var report: Report?
     @Published var habits: [HabitElement] = []
     @Published var showContent: Bool = false
     @Published var showAllHabits: Bool = false
@@ -35,6 +35,10 @@ final class ViewModel: ObservableObject{
     private var todayReport: ReportElement?
     private var alreadyLoggedOut: Bool = false
     private var dateHelper: DateHelperProtocol
+    @Published private var updatingList: [HabitElement] = []
+    var hasLatestUpdates: Bool{
+        return !updatingList.isEmpty
+    }
     
     init(apiService: HomeServiceProtocol = HomeService(),
          dateHelper: DateHelperProtocol = DateHelper()) {
@@ -74,7 +78,7 @@ final class ViewModel: ObservableObject{
             switch result{
             case .success(let habitResponse):
                 DispatchQueue.main.async{
-                    self?.showAllHabits = true
+                    //self?.showAllHabits = true
                     self?.habits = habitResponse.habits ?? []
                 }
             case .failure(let error):
@@ -118,7 +122,6 @@ extension ViewModel{
             dateHelper.isDateToday(date: $0.date ?? "")
         })
         todayReport = filterReport.first
-        print("smm today report = \(String(describing: todayReport))")
     }
     func totalCount()->Int{
         return report?.totalHabitCount ?? 0
@@ -190,7 +193,6 @@ extension ViewModel{
             let u = self.totalCount() - d
             let day = self.dateHelper.getDayName(date: date)
             let data = ReportData(date: date, day: day, done: d, undone: u)
-            print("smm report data = \(d)")
             self.reportDict.append(data)
         }
     }
@@ -210,5 +212,37 @@ extension ViewModel{
             alreadyLoggedOut = true
             NotificationCenter.default.post(name: .logout, object: nil)
         }
+    }
+    
+    func addUpdatedHabit(habitName: String, completed: Bool){
+        if updatingList.contains(where: { $0.name == habitName }) {
+            updatingList.removeAll(where: { $0.name == habitName })
+            return
+        }
+        self.updatingList.append(HabitElement(name: habitName, icon: nil, completed: completed))
+    }
+    
+    func clearUpdatedList(){
+        self.updatingList.removeAll()
+    }
+    
+    func prepareTodayHabit(){
+        self.resetLoading(loading: true)
+        let today = self.report?.report?.filter({ dateHelper.isDateToday(date: $0.date) }).first
+        print("today = \(today?.date ?? "no date"), \(dateHelper.getTodayDate())")
+        habits = habits.map { habit in
+            var updatedHabit = habit
+            if let todayHabits = today?.habits,
+               let matched = todayHabits.first(where: { $0.name == habit.name }) {
+                updatedHabit.completed = matched.completed
+            } else {
+                print("no matched habit for: \(habit.name ?? "no name")")
+                updatedHabit.completed = false
+            }
+            return updatedHabit
+        }
+        self.resetLoading(loading: false)
+        self.showAllHabits = true
+        print("updated habits: \(habits)")
     }
 }

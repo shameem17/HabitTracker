@@ -15,7 +15,6 @@ struct BarChartData{
     var max: Int
     
     func count(item: ReportData) -> Int{
-        print("smm \(done), count = \(self.done ? item.done ?? 0 : self.total - (item.done ?? 0))")
         return self.done ? item.done ?? 0 : self.total - (item.done ?? 0)
     }
 }

@@ -10,6 +10,15 @@ import SwiftUI
 extension HomeView{
     var TodayView: some View{
         VStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Your Habtis for Today \(viewModel.formattedToday())")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 20)
+            
             if viewModel.apiLoding {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle(tint: .green))
@@ -50,13 +59,45 @@ extension HomeView{
                         .padding(.top, 16)
                         .padding(.bottom, 100) // Extra padding for floating button
                     }
+                    Spacer()
+                    HStack(spacing: 12) {
+                        Button(action: {
+                            //saveHabit()
+                            print("update habits")
+                        }) {
+                            Text("Update Habit")
+                                .font(.openSansHeadline)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 50)
+                                .background(viewModel.hasLatestUpdates ? .blue : .gray)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .disabled(viewModel.hasLatestUpdates)
+                        
+                        Button(action: {
+                            //dismiss()
+                            print("clear")
+                            
+                        }) {
+                            Text("Cancel")
+                                .font(.openSansHeadline)
+                                .foregroundColor(.primary)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 50)
+                                .background(.gray.opacity(0.2))
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
                 }
             }
         }
         .onAppear {
-            // Fetch habits when the today view appears
             if viewModel.habits.isEmpty {
                 viewModel.getHabits()
+            }else{
+                viewModel.prepareTodayHabit()
             }
         }
     }
@@ -64,18 +105,15 @@ extension HomeView{
     private func updateHabitStatus(habit: HabitElement, isCompleted: Bool) {
         // Here you would typically update the habit status via API
         print("Habit '\(habit.name ?? "")' completion status changed to: \(isCompleted)")
-        
-        // You can add API call here to update habit status
-        // viewModel.updateHabitStatus(habitName: habit.name, isCompleted: isCompleted)
+        viewModel.addUpdatedHabit(habitName: habit.name ?? "", completed: isCompleted)
     }
 }
 
 // MARK: - Habit Row View
 struct HabitRowView: View {
-    let habit: HabitElement
+    @State var habit: HabitElement
     let onToggle: (Bool) -> Void
     
-    @State private var isCompleted: Bool = false
     @State private var selectedTime: Date = Date()
     @State private var showTimePicker: Bool = false
     @Environment(\.colorScheme) var colorScheme
@@ -96,9 +134,9 @@ struct HabitRowView: View {
                 // Habit Icon
                 Image(systemName: habit.icon ?? "star.fill")
                     .font(.system(size: 24))
-                    .foregroundColor(isCompleted ? .white : .primary)
+                    .foregroundColor(habit.isCompleted ? .white : .primary)
                     .frame(width: 50, height: 50)
-                    .background(isCompleted ? .green : .gray.opacity(0.2))
+                    .background(habit.isCompleted ? .green : .gray.opacity(0.2))
                     .clipShape(Circle())
                 
                 // Habit Name and Status
@@ -106,10 +144,10 @@ struct HabitRowView: View {
                     Text(habit.name ?? "Unnamed Habit")
                         .font(.openSansHeadline)
                         .foregroundColor(.primary)
-                        .strikethrough(isCompleted && !requiresTimeInput)
+                        .strikethrough(habit.isCompleted && !requiresTimeInput)
                     
                     if requiresTimeInput {
-                        if isCompleted {
+                        if habit.isCompleted {
                             Text("Time: \(timeFormatter.string(from: selectedTime))")
                                 .font(.caption)
                                 .foregroundColor(.green)
@@ -119,7 +157,7 @@ struct HabitRowView: View {
                                 .foregroundColor(.secondary)
                         }
                     } else {
-                        Text(isCompleted ? "Completed today!" : "Tap to mark as done")
+                        Text(habit.isCompleted ? "Completed today!" : "Tap to mark as done")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -127,11 +165,9 @@ struct HabitRowView: View {
                 
                 Spacer()
                 
-                // Action Button
                 if requiresTimeInput {
                     Button(action: {
-                        if isCompleted {
-                            // If already set, show time picker to edit
+                        if habit.isCompleted {
                             withAnimation(.easeInOut(duration: 0.3)) {
                                 showTimePicker.toggle()
                             }
@@ -139,27 +175,27 @@ struct HabitRowView: View {
                             // First time setting, show picker and mark as completed
                             withAnimation(.easeInOut(duration: 0.3)) {
                                 showTimePicker = true
-                                isCompleted = true
+                                habit.completed = true
                                 onToggle(true)
                             }
                         }
                     }) {
-                        Image(systemName: isCompleted ? "clock.fill" : "clock")
+                        Image(systemName: habit.isCompleted ? "clock.fill" : "clock")
                             .font(.system(size: 28))
-                            .foregroundColor(isCompleted ? .green : .gray)
+                            .foregroundColor(habit.isCompleted ? .green : .gray)
                     }
                     .buttonStyle(PlainButtonStyle())
                 } else {
                     // Regular completion toggle
                     Button(action: {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            isCompleted.toggle()
-                            onToggle(isCompleted)
+                            habit.completed = !habit.isCompleted
+                            onToggle(habit.isCompleted)
                         }
                     }) {
-                        Image(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
+                        Image(systemName: habit.isCompleted ? "checkmark.circle.fill" : "circle")
                             .font(.system(size: 28))
-                            .foregroundColor(isCompleted ? .green : .gray)
+                            .foregroundColor(habit.isCompleted ? .green : .gray)
                     }
                     .buttonStyle(PlainButtonStyle())
                 }
@@ -193,7 +229,7 @@ struct HabitRowView: View {
                         Button("Cancel") {
                             withAnimation(.easeInOut(duration: 0.3)) {
                                 showTimePicker = false
-                                if !isCompleted {
+                                if !habit.isCompleted {
                                     // If it wasn't completed before, revert
                                     onToggle(false)
                                 }
@@ -206,7 +242,7 @@ struct HabitRowView: View {
                         Button("Done") {
                             withAnimation(.easeInOut(duration: 0.3)) {
                                 showTimePicker = false
-                                isCompleted = true
+                                habit.completed = true
                                 onToggle(true)
                                 print("Time set for \(habit.name ?? ""): \(timeFormatter.string(from: selectedTime))")
                             }
@@ -224,9 +260,9 @@ struct HabitRowView: View {
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(rowBorderColor, lineWidth: isCompleted ? 1.5 : 0.5)
+                .stroke(rowBorderColor, lineWidth: habit.isCompleted ? 1.5 : 0.5)
         )
-        .scaleEffect(isCompleted ? 0.98 : 1.0)
+        .scaleEffect(habit.isCompleted ? 0.98 : 1.0)
         .shadow(color: shadowColor, radius: 2, x: 0, y: 1)
     }
     
@@ -239,7 +275,7 @@ struct HabitRowView: View {
     
     // Dynamic colors based on theme and completion status
     private var rowBackgroundColor: Color {
-        if isCompleted {
+        if habit.isCompleted {
             return colorScheme == .dark ? Color(.systemGray6) : Color(.systemBackground)
         } else {
             return colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6)
@@ -251,7 +287,7 @@ struct HabitRowView: View {
     }
     
     private var rowBorderColor: Color {
-        if isCompleted {
+        if habit.isCompleted {
             return .green.opacity(0.4)
         } else {
             return colorScheme == .dark ? Color(.systemGray4) : Color(.systemGray4)

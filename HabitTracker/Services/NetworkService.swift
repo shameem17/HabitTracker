@@ -112,6 +112,7 @@ final class NetworkService: NetwoserkServiceProtocol{
             return
         }
         
+        print("refresh token is = \(refreshToken)")
         // Create refresh token request
         let refreshTokenRequest = RefreshTokenRouter.refreshToken(refreshToken: refreshToken)
         
