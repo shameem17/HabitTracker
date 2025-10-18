@@ -9,11 +9,12 @@ import Foundation
 
 // MARK: - Habit
 struct UpdateHabit: Codable {
-    let success: Bool?
-    let habit: HabitClass?
+    var date: String
+    var habits: [HabitClass]
 }
 
 // MARK: - HabitClass
 struct HabitClass: Codable {
-    let name, icon: String?
+    let name: String
+    let complete: Bool
 }

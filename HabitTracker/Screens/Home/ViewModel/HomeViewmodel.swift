@@ -23,22 +23,17 @@ enum HomeTab: Int, CaseIterable {
 }
 
 
-final class ViewModel: ObservableObject{
+final class HomeViewmodel: ObservableObject{
     let apiService: HomeServiceProtocol
     @Published var apiLoding: Bool = false
     @Published var errorMessage: String?
     private var report: Report?
     @Published var habits: [HabitElement] = []
     @Published var showContent: Bool = false
-    @Published var showAllHabits: Bool = false
     @Published var reportDict: [ReportData] = []
     private var todayReport: ReportElement?
     private var alreadyLoggedOut: Bool = false
     private var dateHelper: DateHelperProtocol
-    @Published private var updatingList: [HabitElement] = []
-    var hasLatestUpdates: Bool{
-        return !updatingList.isEmpty
-    }
     
     init(apiService: HomeServiceProtocol = HomeService(),
          dateHelper: DateHelperProtocol = DateHelper()) {
@@ -78,7 +73,6 @@ final class ViewModel: ObservableObject{
             switch result{
             case .success(let habitResponse):
                 DispatchQueue.main.async{
-                    //self?.showAllHabits = true
                     self?.habits = habitResponse.habits ?? []
                 }
             case .failure(let error):
@@ -115,7 +109,7 @@ final class ViewModel: ObservableObject{
     }
 }
 
-extension ViewModel{
+extension HomeViewmodel{
     private func getTodayReport(){
         guard let report = report?.report else { return }
         let filterReport = report.filter( {
@@ -126,11 +120,7 @@ extension ViewModel{
     func totalCount()->Int{
         return report?.totalHabitCount ?? 0
     }
-    
     func isHabitsEmpty() -> Bool {
-        habits.forEach{ habit in
-            print("Habit: \(habit.name ?? "no name"), ID: \(habit.icon ?? "no icon")") // Example property access
-        }
         return habits.isEmpty
     }
     
@@ -139,7 +129,7 @@ extension ViewModel{
     }
 }
 
-extension ViewModel{
+extension HomeViewmodel{
     func getPageTitle(for selected: Int) -> String {
         switch selected {
         case 0:
@@ -154,7 +144,7 @@ extension ViewModel{
     }
 }
 
-extension ViewModel{
+extension HomeViewmodel{
    private func daysPassedInCurrentMonth() -> Int {
         let calendar = Calendar.current
         let today = Date()
@@ -206,7 +196,7 @@ extension ViewModel{
     }
     
 }
-extension ViewModel{
+extension HomeViewmodel{
     func logout(){
         if !alreadyLoggedOut{
             alreadyLoggedOut = true
@@ -214,35 +204,8 @@ extension ViewModel{
         }
     }
     
-    func addUpdatedHabit(habitName: String, completed: Bool){
-        if updatingList.contains(where: { $0.name == habitName }) {
-            updatingList.removeAll(where: { $0.name == habitName })
-            return
-        }
-        self.updatingList.append(HabitElement(name: habitName, icon: nil, completed: completed))
+    func getTodayViewModel() -> TodayViewModel {
+        return TodayViewModel.getTodayViewModel(report: self.report, habits: self.habits)
     }
-    
-    func clearUpdatedList(){
-        self.updatingList.removeAll()
-    }
-    
-    func prepareTodayHabit(){
-        self.resetLoading(loading: true)
-        let today = self.report?.report?.filter({ dateHelper.isDateToday(date: $0.date) }).first
-        print("today = \(today?.date ?? "no date"), \(dateHelper.getTodayDate())")
-        habits = habits.map { habit in
-            var updatedHabit = habit
-            if let todayHabits = today?.habits,
-               let matched = todayHabits.first(where: { $0.name == habit.name }) {
-                updatedHabit.completed = matched.completed
-            } else {
-                print("no matched habit for: \(habit.name ?? "no name")")
-                updatedHabit.completed = false
-            }
-            return updatedHabit
-        }
-        self.resetLoading(loading: false)
-        self.showAllHabits = true
-        print("updated habits: \(habits)")
-    }
+   
 }

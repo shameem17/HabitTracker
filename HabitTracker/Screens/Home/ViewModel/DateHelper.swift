@@ -10,6 +10,7 @@ protocol DateHelperProtocol {
     func getTodayDate() -> String
     func isDateToday(date: String?) -> Bool
     func getDayName(date: String) ->String
+    func getDateToday() -> String
 }
 
 final class DateHelper: DateHelperProtocol {
@@ -55,6 +56,10 @@ final class DateHelper: DateHelperProtocol {
         }
         return false
     }
-        
+
+    func getDateToday() -> String {
+        let today = Date()
+        return formater.string(from: today)
+    }
 }
 

@@ -9,8 +9,6 @@ import Foundation
 enum HomeRouter{
     case getHabits
     case getReport(days: String)
-    case updateHabit(date: String, habits: [String: String])
-    case addHabit(name: String, icon: String)
     case profile
 }
 
@@ -26,10 +24,6 @@ extension HomeRouter: BaseRouter {
             return Path.getHabits
         case .getReport(_):
             return Path.getReport
-        case .updateHabit(_, _):
-            return Path.updateHabit
-        case .addHabit(_, _):
-            return Path.addHabit
         case .profile:
             return Path.profile
         }
@@ -41,10 +35,6 @@ extension HomeRouter: BaseRouter {
             return .get
         case .getReport:
             return .get
-        case .updateHabit:
-            return .post
-        case .addHabit:
-            return .post
         case .profile:
             return .get
         }
@@ -57,20 +47,7 @@ extension HomeRouter: BaseRouter {
     }
     
     var body: [String : Any]? {
-        switch self {
-        case .updateHabit(let date, let habits):
-            return [
-                "action": "updateHabit",
-                "date": date,
-                "habits": habits.debugDescription
-            ]
-        case .addHabit(let name, let icon):
-            return [
-                "habit": ["name": name, "icon": icon].debugDescription
-            ]
-        default:
-            return nil
-        }
+        return nil
     }
     
     var parameters: [String : String]? {

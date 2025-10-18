@@ -13,7 +13,7 @@ struct HomeView: View {
     @State private var showingAddHabit = false
     @EnvironmentObject var themeManager: ThemeManager
     internal let viewHelper = ViewHelper()
-    @StateObject internal var viewModel: ViewModel = ViewModel()
+    @StateObject internal var viewModel: HomeViewmodel = HomeViewmodel()
     @State var showProfile: Bool = false
     
     var body: some View {
@@ -38,7 +38,7 @@ struct HomeView: View {
                             HomeScreen
                         }
                     } else if selected == 1 {
-                        TodayView
+                        TodayView(viewModel: viewModel.getTodayViewModel())
                     } else if selected == 2 {
                         SettingsView()
                     }

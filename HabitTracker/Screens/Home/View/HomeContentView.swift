@@ -9,7 +9,7 @@ import SwiftUI
 import Charts
 
 struct HomeContentView: View {
-    @ObservedObject var viewModel: ViewModel
+    @ObservedObject var viewModel: HomeViewmodel
     @State private var progress: Double = 0.0
     
     var body: some View {

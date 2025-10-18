@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct ContentCard: View {
-    @ObservedObject var viewModel: ViewModel
+    @ObservedObject var viewModel: HomeViewmodel
     var barColor: Color
     var done: Bool
     var body: some View {
