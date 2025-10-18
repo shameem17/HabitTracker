@@ -35,72 +35,93 @@ final class NetworkService: NetwoserkServiceProtocol{
         retryCount: Int,
         completion: @escaping CompletionHandler<T>
     ) {
-        do{
-            let urlRequest = try request.asURLRequest()
-            print("request is \(urlRequest.url?.absoluteString ?? "") - Attempt \(retryCount + 1)")
-            print("request headers is \(urlRequest.allHTTPHeaderFields ?? [:])")
-            print("request body is \(String(data: urlRequest.httpBody ?? Data(), encoding: .utf8) ?? "")")
-            
-            let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
-                // Check for network error
-                if let error = error {
-                    print("Network error: \(error.localizedDescription)")
-                    completion(.failure(.requestFailed))
-                    return
-                }
+        // Ensure network operation runs on background thread with proper QoS
+        DispatchQueue.global(qos: .userInitiated).async {
+            do{
+                let urlRequest = try request.asURLRequest()
+                print("request is \(urlRequest.url?.absoluteString ?? "") - Attempt \(retryCount + 1)")
+                print("request headers is \(urlRequest.allHTTPHeaderFields ?? [:])")
+                print("request body is \(String(data: urlRequest.httpBody ?? Data(), encoding: .utf8) ?? "")")
                 
-                // Check HTTP status code
-                if let httpResponse = response as? HTTPURLResponse {
-                    print("HTTP Status Code: \(httpResponse.statusCode)")
-                    
-                    // Handle 401/403 with token refresh mechanism
-                    if (httpResponse.statusCode == 401 || httpResponse.statusCode == 403) && retryCount < AppPrefix.maxRetries {
-                        print("Received \(httpResponse.statusCode) error. Attempting token refresh... (Attempt \(retryCount + 1)/\(AppPrefix.maxRetries + 1))")
-                        
-                        // Call refresh token API
-                        refreshToken { success in
-                            if success {
-                                print("Token refreshed successfully. Retrying original request...")
-                                fetchDataWithRetry(
-                                    request: request,
-                                    retryCount: retryCount + 1,
-                                    completion: completion
-                                )
-                            } else {
-                                print("Token refresh failed. Authentication required.")
-                                completion(.failure(.authRequired))
-                            }
+                let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+                    // Check for network error
+                    if let error = error {
+                        print("Network error: \(error.localizedDescription)")
+                        DispatchQueue.main.async {
+                            completion(.failure(.requestFailed))
                         }
                         return
                     }
                     
-                    // Handle other HTTP errors
-                    if httpResponse.statusCode >= 400 {
-                        print("HTTP Error: \(httpResponse.statusCode)")
-                        completion(.failure(.requestFailed))
-                        return
+                    // Check HTTP status code
+                    if let httpResponse = response as? HTTPURLResponse {
+                        print("HTTP Status Code: \(httpResponse.statusCode)")
+                        
+                        // Handle 401/403 with token refresh mechanism
+                        if (httpResponse.statusCode == 401 || httpResponse.statusCode == 403) && retryCount < AppPrefix.maxRetries {
+                            print("Received \(httpResponse.statusCode) error. Attempting token refresh... (Attempt \(retryCount + 1)/\(AppPrefix.maxRetries + 1))")
+                            
+                            // Call refresh token API on background queue
+                            DispatchQueue.global(qos: .userInitiated).async {
+                                refreshToken { success in
+                                    if success {
+                                        print("Token refreshed successfully. Retrying original request...")
+                                        fetchDataWithRetry(
+                                            request: request,
+                                            retryCount: retryCount + 1,
+                                            completion: completion
+                                        )
+                                    } else {
+                                        print("Token refresh failed. Authentication required.")
+                                        DispatchQueue.main.async {
+                                            completion(.failure(.authRequired))
+                                        }
+                                    }
+                                }
+                            }
+                            return
+                        }
+                        
+                        // Handle other HTTP errors
+                        if httpResponse.statusCode >= 400 {
+                            print("HTTP Error: \(httpResponse.statusCode)")
+                            DispatchQueue.main.async {
+                                completion(.failure(.requestFailed))
+                            }
+                            return
+                        }
+                    }
+                    
+                    // Process successful response on background queue, then call completion on main
+                    DispatchQueue.global(qos: .utility).async {
+                        if let data = data {
+                            do {
+                                let decodedData = try JSONDecoder().decode(T.self, from: data)
+                                print("decoded data is \(decodedData)")
+                                DispatchQueue.main.async {
+                                    completion(.success(decodedData))
+                                }
+                            } catch {
+                                print("Decoding error: \(error.localizedDescription)")
+                                DispatchQueue.main.async {
+                                    completion(.failure(.decodingFailed))
+                                }
+                            }
+                        } else {
+                            print("No data received")
+                            DispatchQueue.main.async {
+                                completion(.failure(.unknown))
+                            }
+                        }
                     }
                 }
-                
-                // Process successful response
-                if let data = data {
-                    do {
-                        let decodedData = try JSONDecoder().decode(T.self, from: data)
-                        print("decoded data is \(decodedData)")
-                        completion(.success(decodedData))
-                    } catch {
-                        print("Decoding error: \(error.localizedDescription)")
-                        completion(.failure(.decodingFailed))
-                    }
-                } else {
-                    print("No data received")
-                    completion(.failure(.unknown))
+                task.resume()
+            } catch {
+                print("URL request creation error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    completion(.failure(.invalidURL))
                 }
             }
-            task.resume()
-        } catch {
-            print("URL request creation error: \(error.localizedDescription)")
-            completion(.failure(.invalidURL))
         }
     }
     

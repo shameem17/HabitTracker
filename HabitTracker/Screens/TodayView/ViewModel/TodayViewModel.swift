@@ -103,7 +103,11 @@ extension TodayViewModel{
             switch result {
             case .success(_):
                 print("Habit updated successfully")
+                self?.clearUpdatedList()
             case .failure(let error):
+                if error == .authRequired {
+                    self?.logout()
+                }
                 print("Failed to update habit: \(error.localizedDescription)")
             }
         }

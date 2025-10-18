@@ -81,7 +81,7 @@ struct TodayView: View {
                         Button(action: {
                             //dismiss()
                             print("clear")
-                            
+                            viewModel.clearUpdatedList()
                         }) {
                             Text("Cancel")
                                 .font(.openSansHeadline)
