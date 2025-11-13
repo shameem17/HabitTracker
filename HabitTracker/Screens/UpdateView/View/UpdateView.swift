@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct TodayView: View {
-    @StateObject internal var viewModel: TodayViewModel
+struct UpdateView: View {
+    @StateObject internal var viewModel: UpdateViewModel
     
     var body: some View{
         VStack(spacing: 0) {
@@ -68,14 +68,21 @@ struct TodayView: View {
                             print("update habits")
                             viewModel.updateHabit()
                         }) {
-                            Text("Update Habit")
-                                .font(.openSansHeadline)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 50)
-                                .background(viewModel.hasLatestUpdates ? .blue : .gray)
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                            if viewModel.isLoading {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                    .scaleEffect(0.8)
+                            } else{
+                                Text("Update Habit")
+                                    .font(.openSansHeadline)
+                                  
+                            }
                         }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .background(viewModel.hasLatestUpdates ? .blue : .gray)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
                         .disabled(!viewModel.hasLatestUpdates)
                         
                         Button(action: {

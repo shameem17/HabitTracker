@@ -35,14 +35,20 @@ struct AddHabitView: View {
                     Button(action: {
                         saveHabit()
                     }) {
-                        Text("Add Habit")
-                            .font(.openSansHeadline)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 50)
-                            .background(habitName.isEmpty ? .gray : .blue)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                        if viewModel.isLoading {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .scaleEffect(0.8)
+                        }else{
+                            Text("Add Habit")
+                                .font(.openSansHeadline)
+                        }
                     }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
+                    .background(habitName.isEmpty ? .gray : .blue)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
                     .disabled(habitName.isEmpty)
                     
                     Button(action: {
@@ -67,7 +73,8 @@ struct AddHabitView: View {
     
     private func saveHabit() {
         print("Saving habit: \(habitName) with icon: \(selectedIcon)")
-        dismiss()
+        viewModel.addHabit(name: habitName, icon: selectedIcon)
+       
     }
 }
 

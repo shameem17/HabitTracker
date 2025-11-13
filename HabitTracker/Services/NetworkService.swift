@@ -39,14 +39,10 @@ final class NetworkService: NetwoserkServiceProtocol{
         DispatchQueue.global(qos: .userInitiated).async {
             do{
                 let urlRequest = try request.asURLRequest()
-                print("request is \(urlRequest.url?.absoluteString ?? "") - Attempt \(retryCount + 1)")
-                print("request headers is \(urlRequest.allHTTPHeaderFields ?? [:])")
-                print("request body is \(String(data: urlRequest.httpBody ?? Data(), encoding: .utf8) ?? "")")
                 
                 let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
                     // Check for network error
-                    if let error = error {
-                        print("Network error: \(error.localizedDescription)")
+                    if let _ = error {
                         DispatchQueue.main.async {
                             completion(.failure(.requestFailed))
                         }
@@ -55,7 +51,6 @@ final class NetworkService: NetwoserkServiceProtocol{
                     
                     // Check HTTP status code
                     if let httpResponse = response as? HTTPURLResponse {
-                        print("HTTP Status Code: \(httpResponse.statusCode)")
                         
                         // Handle 401/403 with token refresh mechanism
                         if (httpResponse.statusCode == 401 || httpResponse.statusCode == 403) && retryCount < AppPrefix.maxRetries {

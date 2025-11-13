@@ -8,6 +8,21 @@
 import Foundation
 
 final class AddHabitViewModel: ObservableObject{
+    // MARK: - Published Properties
+    @Published var habitName: String = ""
+    @Published var selectedIcon: String = "star.fill"
+    @Published var isLoading: Bool = false
+    @Published var showError: Bool = false
+    @Published var errorMessage: String?
+    @Published var showSuccess: Bool = false
+    @Published var isHabitAdded: Bool = false
+    
+    private let updateVM: AddNewHabitProtocol = UpdateViewModel()
+    
+    private let apiService: AddHabitProtocol = AddHabitService()
+    // MARK: - Private Properties
+
+    
     private let allIcons = [
         // Health & Fitness
         "heart.fill", "heart", "lungs.fill", "brain.head.profile", "dumbbell.fill",
@@ -81,5 +96,69 @@ final class AddHabitViewModel: ObservableObject{
 extension AddHabitViewModel{
     func getAllIcons()->[String]{
         return self.allIcons
+    }
+}
+
+extension AddHabitViewModel{
+    // MARK: - Validation
+    
+    // MARK: - API Methods
+    @MainActor
+    func addHabit(name: String, icon: String) {
+        
+        isLoading = true
+        clearErrors()
+        
+        apiService.addHabit(name: name, icon: icon) { [weak self] result in
+            self?.isLoading = false
+            switch result {
+            case .success(_):
+                print("Habit added successfully")
+                self?.updateList(name: name, icon: icon)
+            case .failure(let error):
+                print("Failed to add habit: \(error.localizedDescription)")
+            }
+        }
+        
+        
+    }
+    
+    private func updateList(name: String, icon: String){
+        DispatchQueue.main.async{[weak self] in
+            self?.updateVM.addNewHabit(name: name, icon: icon)
+        }
+    }
+    
+    // MARK: - Helper Methods
+    private func showErrorMessage(_ message: String) {
+        errorMessage = message
+        showError = true
+    }
+    
+    private func clearErrors() {
+        showError = false
+        errorMessage = nil
+    }
+    
+    private func clearForm() {
+        habitName = ""
+        selectedIcon = "star.fill"
+    }
+    
+    private func handleError(_ error: Error) {
+        let message = switch error {
+        case NetworkError.invalidURL:
+            "Invalid request. Please try again."
+        case NetworkError.requestFailed:
+            "Network error. Please check your connection."
+        case NetworkError.decodingFailed:
+            "Failed to process response. Please try again."
+        case NetworkError.unknown:
+            "An unexpected error occurred."
+        default:
+            error.localizedDescription
+        }
+        
+        showErrorMessage(message)
     }
 }

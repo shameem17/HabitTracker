@@ -14,7 +14,7 @@ struct Habit: Codable {
 }
 
 // MARK: - HabitElement
-struct HabitElement: Codable {
+struct HabitElement: Codable, Identifiable, Equatable {
     let id = UUID()
     let name, icon: String?
     var completed: Bool?

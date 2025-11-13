@@ -38,7 +38,7 @@ struct HomeView: View {
                             HomeScreen
                         }
                     } else if selected == 1 {
-                        TodayView(viewModel: viewModel.getTodayViewModel())
+                        UpdateView(viewModel: viewModel.getTodayViewModel())
                     } else if selected == 2 {
                         SettingsView()
                     }

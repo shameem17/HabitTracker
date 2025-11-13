@@ -96,13 +96,13 @@ class AuthViewModel: ObservableObject {
         authService.getProfile {[weak self] result in
             switch result{
             case .success(let user):
-                print("user info is \(user)")
+                print("smm user info is \(user)")
                 self?.handleUser(user: user)
             case .failure(let error):
                 if error == .authRequired{
                     self?.logout()
                 }
-                print("error is \(error)")
+                print("smm error is user: \(error)")
             }
         }
     }

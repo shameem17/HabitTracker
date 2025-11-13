@@ -92,7 +92,7 @@ final class HomeViewmodel: ObservableObject{
             return 0.001
         }
         let doneCount = Double(todayReport?.done ?? 0)
-        let undoneCount = Double(todayReport?.undone ?? 0)
+        let undoneCount = Double(totalCount()) - doneCount
         return Double(doneCount/(doneCount + undoneCount))
     }
     func doneUndoneCount()->(done: Int, undone: Int){
@@ -204,8 +204,8 @@ extension HomeViewmodel{
         }
     }
     
-    func getTodayViewModel() -> TodayViewModel {
-        return TodayViewModel.getTodayViewModel(report: self.report, habits: self.habits)
+    func getTodayViewModel() -> UpdateViewModel {
+        return UpdateViewModel.getTodayViewModel(report: self.report, habits: self.habits)
     }
    
 }

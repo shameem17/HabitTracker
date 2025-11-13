@@ -7,12 +7,17 @@
 
 import Foundation
 
-final class TodayViewModel: ObservableObject{
+protocol AddNewHabitProtocol{
+    func addNewHabit(name: String, icon: String)
+}
+
+final class UpdateViewModel: ObservableObject{
     @Published var apiLoding: Bool = false
     @Published var errorMessage: String?
     @Published private var updatingList: [HabitElement] = []
     @Published var habits: [HabitElement]
     @Published var showAllHabits: Bool
+    @Published var isLoading: Bool = false
     private var apiService: UpdateHabitProtocol = UpdateHabitService()
     private var report: Report?
 
@@ -27,8 +32,8 @@ final class TodayViewModel: ObservableObject{
         habits = []
     }
     
-    public static func getTodayViewModel(report: Report?, habits: [HabitElement]) -> TodayViewModel{
-        let viewModel = TodayViewModel()
+    public static func getTodayViewModel(report: Report?, habits: [HabitElement]) -> UpdateViewModel{
+        let viewModel = UpdateViewModel()
         viewModel.report = report
         viewModel.habits = habits
         return viewModel
@@ -36,7 +41,7 @@ final class TodayViewModel: ObservableObject{
          
 }
 
-extension TodayViewModel{
+extension UpdateViewModel{
     private func resetLoading(loading: Bool){
         DispatchQueue.main.async{[weak self] in
             self?.apiLoding = loading
@@ -84,7 +89,7 @@ extension TodayViewModel{
     
 }
 
-extension TodayViewModel{
+extension UpdateViewModel{
     func logout(){
         NotificationCenter.default.post(name: .logout, object: nil)
     }
@@ -98,8 +103,10 @@ extension TodayViewModel{
     }
     
     func updateHabit(){
+        isLoading = true
         let list = makeUpdatedList()
         apiService.updateHabitStatus(data: list) { [weak self] result in
+            self?.isLoading = false
             switch result {
             case .success(_):
                 print("Habit updated successfully")
@@ -112,5 +119,12 @@ extension TodayViewModel{
             }
         }
             
+    }
+}
+
+extension UpdateViewModel: AddNewHabitProtocol{
+    func addNewHabit(name: String, icon: String) {
+        print("new habit added \(name)")
+        self.habits.insert(HabitElement(name: name, icon: icon, completed: false), at: 0)
     }
 }
