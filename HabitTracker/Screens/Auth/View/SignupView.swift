@@ -38,7 +38,7 @@ struct SignupView: View {
             Button("OK", role: .cancel) { }
         } message: {
             Text(authViewModel.errorMessage ?? "An unknown error occurred")
-                .font(.openSansBody)
+                .font(.poppinsBody)
         }
         .onChange(of: authViewModel.isAuthenticated) { isAuthenticated in
             if isAuthenticated {
@@ -63,18 +63,18 @@ extension SignupView {
                     .frame(width: 80, height: 80)
                 
                 Image(systemName: "person.badge.plus")
-                    .font(.openSansCustomBold(size: 32))
+                    .font(.poppinsBold)
                     .foregroundColor(.white)
             }
             
             VStack(spacing: 8) {
                 Text("Create Account")
-                    .font(.openSansLargeTitle)
+                    .font(.poppinsLargeTitle)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
                 
                 Text("Join us and start building better habits today")
-                    .font(.openSansSubheadline)
+                    .font(.poppinsSubheadline)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
             }
@@ -89,17 +89,17 @@ extension SignupView {
             // Name Field
             VStack(alignment: .leading, spacing: 8) {
                 Text("Full Name")
-                    .font(.openSansHeadline)
+                    .font(.poppinsHeadline)
                     .foregroundColor(.primary)
                 
                 HStack {
                     Image(systemName: "person")
-                        .font(.openSansBody)
+                        .font(.poppinsBody)
                         .foregroundColor(.secondary)
                         .frame(width: 20)
                     
                     TextField("Enter your full name", text: $authViewModel.signupName)
-                        .font(.openSansBody)
+                        .font(.poppinsBody)
                         .textFieldStyle(PlainTextFieldStyle())
                         .autocapitalization(.words)
                         .disableAutocorrection(true)
@@ -116,17 +116,17 @@ extension SignupView {
             // Email Field
             VStack(alignment: .leading, spacing: 8) {
                 Text("Email")
-                    .font(.openSansHeadline)
+                    .font(.poppinsHeadline)
                     .foregroundColor(.primary)
                 
                 HStack {
                     Image(systemName: "envelope")
-                        .font(.openSansBody)
+                        .font(.poppinsBody)
                         .foregroundColor(.secondary)
                         .frame(width: 20)
                     
                     TextField("Enter your email", text: $authViewModel.signupEmail)
-                        .font(.openSansBody)
+                        .font(.poppinsBody)
                         .textFieldStyle(PlainTextFieldStyle())
                         .keyboardType(.emailAddress)
                         .autocapitalization(.none)
@@ -144,22 +144,22 @@ extension SignupView {
             // Password Field
             VStack(alignment: .leading, spacing: 8) {
                 Text("Password")
-                    .font(.openSansHeadline)
+                    .font(.poppinsHeadline)
                     .foregroundColor(.primary)
                 
                 HStack {
                     Image(systemName: "lock")
-                        .font(.openSansBody)
+                        .font(.poppinsBody)
                         .foregroundColor(.secondary)
                         .frame(width: 20)
                     
                     if showPassword {
                         TextField("Enter your password", text: $authViewModel.signupPassword)
-                            .font(.openSansBody)
+                            .font(.poppinsBody)
                             .textFieldStyle(PlainTextFieldStyle())
                     } else {
                         SecureField("Enter your password", text: $authViewModel.signupPassword)
-                            .font(.openSansBody)
+                            .font(.poppinsBody)
                             .textFieldStyle(PlainTextFieldStyle())
                     }
                     
@@ -167,7 +167,7 @@ extension SignupView {
                         showPassword.toggle()
                     }) {
                         Image(systemName: showPassword ? "eye.slash" : "eye")
-                            .font(.openSansBody)
+                            .font(.poppinsBody)
                             .foregroundColor(.secondary)
                     }
                 }
@@ -192,22 +192,22 @@ extension SignupView {
             // Confirm Password Field
             VStack(alignment: .leading, spacing: 8) {
                 Text("Confirm Password")
-                    .font(.openSansHeadline)
+                    .font(.poppinsHeadline)
                     .foregroundColor(.primary)
                 
                 HStack {
                     Image(systemName: "lock.fill")
-                        .font(.openSansBody)
+                        .font(.poppinsBody)
                         .foregroundColor(.secondary)
                         .frame(width: 20)
                     
                     if showConfirmPassword {
                         TextField("Confirm your password", text: $authViewModel.signupConfirmPassword)
-                            .font(.openSansBody)
+                            .font(.poppinsBody)
                             .textFieldStyle(PlainTextFieldStyle())
                     } else {
                         SecureField("Confirm your password", text: $authViewModel.signupConfirmPassword)
-                            .font(.openSansBody)
+                            .font(.poppinsBody)
                             .textFieldStyle(PlainTextFieldStyle())
                     }
                     
@@ -215,7 +215,7 @@ extension SignupView {
                         showConfirmPassword.toggle()
                     }) {
                         Image(systemName: showConfirmPassword ? "eye.slash" : "eye")
-                            .font(.openSansBody)
+                            .font(.poppinsBody)
                             .foregroundColor(.secondary)
                     }
                 }
@@ -240,30 +240,30 @@ extension SignupView {
             // Terms and Privacy
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "info.circle")
-                    .font(.openSansCaption)
+                    .font(.poppinsCaption)
                     .foregroundColor(.blue)
                     .padding(.top, 2)
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("By creating an account, you agree to our")
-                        .font(.openSansCaption)
+                        .font(.poppinsCaption)
                         .foregroundColor(.secondary)
                     
                     HStack(spacing: 4) {
                         Button("Terms of Service") {
                             // TODO: Show terms
                         }
-                        .font(.openSansCaption)
+                        .font(.poppinsCaption)
                         .foregroundColor(.blue)
                         
                         Text("and")
-                            .font(.openSansCaption)
+                            .font(.poppinsCaption)
                             .foregroundColor(.secondary)
                         
                         Button("Privacy Policy") {
                             // TODO: Show privacy policy
                         }
-                        .font(.openSansCaption)
+                        .font(.poppinsCaption)
                         .foregroundColor(.blue)
                     }
                 }
@@ -285,7 +285,7 @@ extension SignupView {
                             .scaleEffect(0.8)
                     } else {
                         Text("Create Account")
-                            .font(.openSansHeadline)
+                            .font(.poppinsHeadline)
                             .fontWeight(.semibold)
                     }
                 }
@@ -320,7 +320,7 @@ extension SignupView {
                     .foregroundColor(.secondary.opacity(0.3))
                 
                 Text("or")
-                    .font(.openSansCaption)
+                    .font(.poppinsCaption)
                     .foregroundColor(.secondary)
                     .padding(.horizontal, 16)
                 
@@ -335,11 +335,11 @@ extension SignupView {
             }) {
                 HStack {
                     Text("Already have an account?")
-                        .font(.openSansBody)
+                        .font(.poppinsBody)
                         .foregroundColor(.primary)
                     
                     Text("Sign In")
-                        .font(.openSansBody)
+                        .font(.poppinsBody)
                         .fontWeight(.semibold)
                         .foregroundColor(.blue)
                 }
@@ -356,11 +356,11 @@ struct PasswordRequirement: View {
     var body: some View {
         HStack(spacing: 6) {
             Image(systemName: isValid ? "checkmark.circle.fill" : "circle")
-                .font(.openSansCaption)
+                .font(.poppinsCaption)
                 .foregroundColor(isValid ? .green : .secondary)
             
             Text(text)
-                .font(.openSansCaption)
+                .font(.poppinsCaption)
                 .foregroundColor(isValid ? .green : .secondary)
         }
     }

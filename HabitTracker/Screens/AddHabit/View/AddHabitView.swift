@@ -41,7 +41,7 @@ struct AddHabitView: View {
                                 .scaleEffect(0.8)
                         }else{
                             Text("Add Habit")
-                                .font(.openSansHeadline)
+                                .font(.poppinsHeadline)
                         }
                     }
                     .foregroundColor(.white)
@@ -55,7 +55,7 @@ struct AddHabitView: View {
                         dismiss()
                     }) {
                         Text("Cancel")
-                            .font(.openSansHeadline)
+                            .font(.poppinsHeadline)
                             .foregroundColor(.primary)
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
@@ -82,11 +82,11 @@ extension AddHabitView{
     var Header: some View{
         VStack(alignment: .leading, spacing: 8) {
             Text("Add New Habit")
-                .font(.openSansLargeTitle)
+                .font(.poppinsLargeTitle)
                 .bold()
             
             Text("Create a new habit to track your progress")
-                .font(.openSansSubheadline)
+                .font(.poppinsSubheadline)
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -97,12 +97,12 @@ extension AddHabitView{
     var FromFields: some View{
         VStack(alignment: .leading, spacing: 8) {
             Text("Habit Name")
-                .font(.openSansHeadline)
+                .font(.poppinsHeadline)
                 .foregroundColor(.primary)
             
             TextField("Enter habit name", text: $habitName)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                .font(.openSansBody)
+                .font(.poppinsBody)
                 .autocapitalization(.words)
                 .disableAutocorrection(true)
         }
@@ -113,7 +113,7 @@ extension AddHabitView{
     var IconSelector: some View{
         VStack(alignment: .leading, spacing: 12) {
             Text("Choose Icon")
-                .font(.openSansHeadline)
+                .font(.poppinsHeadline)
                 .foregroundColor(.primary)
             
             Button(action: {
@@ -121,18 +121,18 @@ extension AddHabitView{
             }) {
                 HStack {
                     Image(systemName: selectedIcon)
-                        .font(.openSansCustomRegular(size: 24))
+                        .font(.poppinsMedium)
                         .foregroundColor(.primary)
                         .frame(width: 40)
                     
                     Text("Tap to choose icon")
-                        .font(.openSansBody)
+                        .font(.poppinsBody)
                         .foregroundColor(.primary)
                     
                     Spacer()
                     
                     Image(systemName: "chevron.right")
-                        .font(.openSansCustomRegular(size: 14))
+                        .font(.poppinsFootnote)
                         .foregroundColor(.secondary)
                 }
                 .padding()

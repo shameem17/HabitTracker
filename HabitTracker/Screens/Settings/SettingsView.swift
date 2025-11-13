@@ -37,7 +37,7 @@ struct SettingsView: View {
                                 .frame(width: 30)
                             
                             Text("Appearance")
-                                .font(.openSansHeadline)
+                                .font(.poppinsHeadline)
                                 .fontWeight(.semibold)
                         }
                         .padding(.horizontal, 20)
@@ -70,7 +70,7 @@ struct SettingsView: View {
                                 .frame(width: 30)
                             
                             Text("About")
-                                .font(.openSansHeadline)
+                                .font(.poppinsHeadline)
                                 .fontWeight(.semibold)
                         }
                         .padding(.horizontal, 20)
@@ -122,7 +122,7 @@ struct ThemeOptionRow: View {
                 // Theme Info
                 VStack(alignment: .leading, spacing: 4) {
                     Text(theme.displayName)
-                        .font(.openSansHeadline)
+                        .font(.poppinsHeadline)
                         .foregroundColor(.primary)
                     
                     Text(getThemeDescription(theme))
@@ -192,7 +192,7 @@ struct SettingsRow: View {
                 .frame(width: 30)
             
             Text(title)
-                .font(.openSansBody)
+                .font(.poppinsBody)
                 .foregroundColor(.primary)
             
             Spacer()

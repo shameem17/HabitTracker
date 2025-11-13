@@ -16,7 +16,7 @@ struct ProfileView: View {
         
         VStack(alignment: .leading, spacing: 16) {
             Text("User Profile")
-                .font(.openSansTitle)
+                .font(.poppinsTitle)
                 .fontWeight(.bold)
                 .padding(.horizontal, 20)
                 .padding(.top, 30)
@@ -29,7 +29,7 @@ struct ProfileView: View {
                     .frame(width: 30)
                 
                 Text("Profile")
-                    .font(.openSansHeadline)
+                    .font(.poppinsHeadline)
                     .fontWeight(.semibold)
             }
             .padding(.horizontal, 20)
@@ -62,7 +62,7 @@ struct ProfileView: View {
                             .frame(width: 30)
                         
                         Text("Sign Out")
-                            .font(.openSansBody)
+                            .font(.poppinsBody)
                             .foregroundColor(.red)
                         
                         Spacer()
@@ -94,7 +94,7 @@ struct ProfileView: View {
             }
         } message: {
             Text("Are you sure you want to sign out?")
-                .font(.openSansBody)
+                .font(.poppinsBody)
         }
     }
 }

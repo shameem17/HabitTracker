@@ -15,7 +15,7 @@ struct ContentCard: View {
             HStack{
                 Text("\(done ? "Done" : "Not Done")")
                     .multilineTextAlignment(.leading)
-                    .font(.openSansFootnote)
+                    .font(.poppinsFootnote)
                     .foregroundStyle(.primary)
                     .padding(.leading, 10)
                     .padding(.top, 16)
@@ -23,7 +23,7 @@ struct ContentCard: View {
                 Spacer()
                 Image(systemName: "arrowtriangle.right.fill")
                     .foregroundStyle(barColor)
-                    .font(.openSansTitle)
+                    .font(.poppinsTitle)
                     .padding(.trailing, 10)
                 
             }

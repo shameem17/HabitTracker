@@ -40,7 +40,7 @@ struct HabitRowView: View {
                 // Habit Name and Status
                 VStack(alignment: .leading, spacing: 4) {
                     Text(habit.name ?? "Unnamed Habit")
-                        .font(.openSansHeadline)
+                        .font(.poppinsHeadline)
                         .foregroundColor(.primary)
                         .strikethrough(habit.isCompleted && !requiresTimeInput)
                     

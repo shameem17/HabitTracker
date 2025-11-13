@@ -16,10 +16,10 @@ struct HomeHeaderView: View {
         HStack{
             VStack(alignment: .leading){
                 Text(dateText)
-                    .font(.openSansTitle3)
+                    .font(.poppinsTitle3)
                     .foregroundStyle(.secondary)
                 Text(title)
-                    .font(.openSansLargeTitle)
+                    .font(.poppinsTitle2)
             }
             Spacer()
             Image(systemName: "person.crop.circle")

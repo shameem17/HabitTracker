@@ -39,7 +39,7 @@ struct LoginView: View {
             Button("OK", role: .cancel) { }
         } message: {
             Text(authViewModel.errorMessage ?? "An unknown error occurred")
-                .font(.openSansBody)
+                .font(.poppinsBody)
         }
     }
 }
@@ -59,18 +59,18 @@ extension LoginView {
                     .frame(width: 80, height: 80)
                 
                 Image(systemName: "target")
-                    .font(.openSansCustomBold(size: 32))
+                    .font(.poppinsBold)
                     .foregroundColor(.white)
             }
             
             VStack(spacing: 8) {
                 Text("Welcome Back")
-                    .font(.openSansLargeTitle)
+                    .font(.poppinsLargeTitle)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
                 
                 Text("Sign in to continue tracking your habits")
-                    .font(.openSansSubheadline)
+                    .font(.poppinsSubheadline)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
             }
@@ -85,17 +85,17 @@ extension LoginView {
             // Email Field
             VStack(alignment: .leading, spacing: 8) {
                 Text("Email")
-                    .font(.openSansHeadline)
+                    .font(.poppinsHeadline)
                     .foregroundColor(.primary)
                 
                 HStack {
                     Image(systemName: "envelope")
-                        .font(.openSansBody)
+                        .font(.poppinsBody)
                         .foregroundColor(.secondary)
                         .frame(width: 20)
                     
                     TextField("Enter your email", text: $authViewModel.loginEmail)
-                        .font(.openSansBody)
+                        .font(.poppinsBody)
                         .textFieldStyle(PlainTextFieldStyle())
                         .keyboardType(.emailAddress)
                         .autocapitalization(.none)
@@ -113,22 +113,22 @@ extension LoginView {
             // Password Field
             VStack(alignment: .leading, spacing: 8) {
                 Text("Password")
-                    .font(.openSansHeadline)
+                    .font(.poppinsHeadline)
                     .foregroundColor(.primary)
                 
                 HStack {
                     Image(systemName: "lock")
-                        .font(.openSansBody)
+                        .font(.poppinsBody)
                         .foregroundColor(.secondary)
                         .frame(width: 20)
                     
                     if showPassword {
                         TextField("Enter your password", text: $authViewModel.loginPassword)
-                            .font(.openSansBody)
+                            .font(.poppinsBody)
                             .textFieldStyle(PlainTextFieldStyle())
                     } else {
                         SecureField("Enter your password", text: $authViewModel.loginPassword)
-                            .font(.openSansBody)
+                            .font(.poppinsBody)
                             .textFieldStyle(PlainTextFieldStyle())
                     }
                     
@@ -136,7 +136,7 @@ extension LoginView {
                         showPassword.toggle()
                     }) {
                         Image(systemName: showPassword ? "eye.slash" : "eye")
-                            .font(.openSansBody)
+                            .font(.poppinsBody)
                             .foregroundColor(.secondary)
                     }
                 }
@@ -155,7 +155,7 @@ extension LoginView {
                 Button("Forgot Password?") {
                     // TODO: Implement forgot password
                 }
-                .font(.openSansBody)
+                .font(.poppinsBody)
                 .foregroundColor(.blue)
             }
             
@@ -172,7 +172,7 @@ extension LoginView {
                             .scaleEffect(0.8)
                     } else {
                         Text("Sign In")
-                            .font(.openSansHeadline)
+                            .font(.poppinsHeadline)
                             .fontWeight(.semibold)
                     }
                 }
@@ -207,7 +207,7 @@ extension LoginView {
                     .foregroundColor(.secondary.opacity(0.3))
                 
                 Text("or")
-                    .font(.openSansCaption)
+                    .font(.poppinsCaption)
                     .foregroundColor(.secondary)
                     .padding(.horizontal, 16)
                 
@@ -223,11 +223,11 @@ extension LoginView {
             }) {
                 HStack {
                     Text("Don't have an account?")
-                        .font(.openSansBody)
+                        .font(.poppinsBody)
                         .foregroundColor(.primary)
                     
                     Text("Sign Up")
-                        .font(.openSansBody)
+                        .font(.poppinsBody)
                         .fontWeight(.semibold)
                         .foregroundColor(.blue)
                 }

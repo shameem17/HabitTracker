@@ -121,7 +121,7 @@ extension IconPickerView{
                 .foregroundColor(.secondary)
             
             Text("No icons found")
-                .font(.openSansHeadline)
+                .font(.poppinsHeadline)
                 .foregroundColor(.secondary)
             
             Text("Try searching with different keywords")

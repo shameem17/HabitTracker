@@ -23,19 +23,19 @@ struct EmptyStateView: View {
                     .frame(width: 120, height: 120)
                 
                 Image(systemName: "target")
-                    .font(.openSansCustomBold(size: 48))
+                    .font(.poppinsCustomBold(size: 48))
                     .foregroundColor(.blue)
             }
             
             // Empty State Text
             VStack(spacing: 12) {
                 Text("No Habits Yet")
-                    .font(.openSansLargeTitle)
+                    .font(.poppinsLargeTitle)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
                 
                 Text("Start building better habits today!\nTap the + button on the Today tab to create your first habit.")
-                    .font(.openSansBody)
+                    .font(.poppinsBody)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .lineLimit(nil)
@@ -45,17 +45,17 @@ struct EmptyStateView: View {
             VStack(spacing: 8) {
                 HStack(spacing: 6) {
                     Image(systemName: "lightbulb")
-                        .font(.openSansCaption)
+                        .font(.poppinsCaption)
                         .foregroundColor(.orange)
                     
                     Text("Pro Tip")
-                        .font(.openSansCaption)
+                        .font(.poppinsCaption)
                         .fontWeight(.semibold)
                         .foregroundColor(.orange)
                 }
                 
                 Text("Start small with habits like drinking water or reading for 5 minutes daily")
-                    .font(.openSansCaption)
+                    .font(.poppinsCaption)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)

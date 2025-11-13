@@ -16,7 +16,7 @@ struct ActivityRingCard: View {
             
             Text("Activity Summary")
                 .multilineTextAlignment(.leading)
-                .font(.openSansTitle)
+                .font(.poppinsTitle)
                 .bold()
                 .foregroundStyle(.primary)
                 .padding(.leading, 24)
@@ -35,10 +35,10 @@ struct ActivityRingCard: View {
                 Spacer()
                 VStack(alignment: .leading){
                     Text("Today Report")
-                        .font(.openSansTitle2)
+                        .font(.poppinsTitle2)
                         .bold()
                     Text("\(done)/\(total) Completed")
-                        .font(.openSansHeadline)
+                        .font(.poppinsHeadline)
                         .foregroundStyle(.red.opacity(0.9))
                     
                 }

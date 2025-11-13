@@ -35,11 +35,11 @@ struct UpdateView: View {
                             .foregroundColor(.secondary)
                         
                         Text("No Habits Yet")
-                            .font(.openSansTitle2)
+                            .font(.poppinsTitle2)
                             .fontWeight(.semibold)
                         
                         Text("Add your first habit to start tracking your progress")
-                            .font(.openSansBody)
+                            .font(.poppinsBody)
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
@@ -74,7 +74,7 @@ struct UpdateView: View {
                                     .scaleEffect(0.8)
                             } else{
                                 Text("Update Habit")
-                                    .font(.openSansHeadline)
+                                    .font(.poppinsHeadline)
                                   
                             }
                         }
@@ -91,7 +91,7 @@ struct UpdateView: View {
                             viewModel.clearUpdatedList()
                         }) {
                             Text("Cancel")
-                                .font(.openSansHeadline)
+                                .font(.poppinsHeadline)
                                 .foregroundColor(.primary)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 50)
