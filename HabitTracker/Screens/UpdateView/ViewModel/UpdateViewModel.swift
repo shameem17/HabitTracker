@@ -15,6 +15,7 @@ final class UpdateViewModel: ObservableObject{
     @Published var showAllHabits: Bool = false
     @Published var isLoading: Bool = false
     @Published var refreshId = UUID()
+    @Published var selectedDate: Date = Date() // Track selected date
     private var apiService: UpdateHabitProtocol = UpdateHabitService()
     private var cancellables = Set<AnyCancellable>()
     private var dateHelper: DateHelperProtocol
@@ -22,7 +23,9 @@ final class UpdateViewModel: ObservableObject{
     // Computed properties that reference centralized data
     var apiLoding: Bool { dataManager.isLoading }
     var errorMessage: String? { dataManager.errorMessage }
-    var habits: [HabitElement] { dataManager.getTodaysHabits() }
+    var habits: [HabitElement] {
+        return getHabitsForSelectedDate()
+    }
     
     var hasLatestUpdates: Bool{
         return !updatingList.isEmpty
@@ -94,6 +97,70 @@ extension UpdateViewModel{
         return habits.count
     }
     
+    func changeSelectedDate(to date: Date) {
+        self.selectedDate = date
+        self.refreshId = UUID()
+    }
+    
+    func goToPreviousDay() {
+        if canGoToPreviousDay(){
+            if let previousDay = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate) {
+                selectedDate = previousDay
+                self.refreshId = UUID()
+            }
+        }
+    }
+    
+    func goToNextDay() {
+        if canGoToNextDay() {
+            if let nextDay = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate) {
+                selectedDate = nextDay
+                self.refreshId = UUID()
+            }
+        }
+    }
+    
+    func canGoToPreviousDay() -> Bool {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let selected = calendar.startOfDay(for: selectedDate)
+        guard let minimum = Calendar.current.date(byAdding: .day, value: -6, to: today) else{
+            return true
+        }
+        return selected > minimum
+    }
+    
+    func canGoToNextDay() -> Bool {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let selected = calendar.startOfDay(for: selectedDate)
+     
+        return selected < today
+    }
+    
+    func isToday() -> Bool {
+        let calendar = Calendar.current
+        return calendar.isDateInToday(selectedDate)
+    }
+    
+    func goToToday() {
+        selectedDate = Date()
+        self.refreshId = UUID()
+    }
+    
+    func getFormattedSelectedDate() -> String {
+        if isToday() {
+            return "Today"
+        }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE, MMM d, yyyy"
+        return formatter.string(from: selectedDate)
+    }
+    
+    private func getHabitsForSelectedDate() -> [HabitElement] {
+        // Get habits for the selected date from data manager
+        return dataManager.getHabits(for: selectedDate)
+    }
 }
 
 extension UpdateViewModel{
@@ -105,7 +172,7 @@ extension UpdateViewModel{
         let habits = updatingList.map({ habit in
             HabitClass(name: habit.name ?? "", complete: habit.isCompleted)
         })
-        let updateHabitsList = UpdateHabit(date: dateHelper.getDateToday(), habits: habits)
+        let updateHabitsList = UpdateHabit(date: dateHelper.getDate(date: selectedDate ), habits: habits)
         return updateHabitsList
     }
     
@@ -117,9 +184,9 @@ extension UpdateViewModel{
             switch result {
             case .success(_):
                 print("Habit updated successfully")
+                self?.updateChanges(habits: list.habits)
                 self?.clearUpdatedList()
                 self?.dataManager.fetchAllData()
-                self?.updateChanges(habits: list.habits)
                 self?.refreshId = UUID()
             case .failure(let error):
                 if error == .authRequired {
@@ -136,5 +203,3 @@ extension UpdateViewModel{
         }
     }
 }
-
-

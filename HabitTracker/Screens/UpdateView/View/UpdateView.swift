@@ -14,13 +14,18 @@ struct UpdateView: View {
         ZStack{
             VStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Your Habtis for Today \(viewModel.formattedToday())")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                    Text("Your Habits \(viewModel.getFormattedSelectedDate())")
+                        .font(.poppinsTitle3)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 20)
-                .padding(.bottom, 20)
+                .padding(.top, 5)
+                
+                // Date Paginator
+                DatePaginatorView(viewModel: viewModel)
+                    .padding(.vertical, 6)
                 
                 if viewModel.apiLoding {
                     ProgressView()
@@ -58,6 +63,7 @@ struct UpdateView: View {
                                     }
                                 }
                             }
+                            .id(viewModel.refreshId)
                             .padding(.horizontal, 16)
                             .padding(.top, 16)
                             .padding(.bottom, 100) // Extra padding for floating button

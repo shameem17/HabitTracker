@@ -238,4 +238,31 @@ extension HabitDataManager {
     func getFormattedToday() -> String {
         return dateHelper.getTodayDate()
     }
+    
+    /// Get habits for a specific date with completion status
+    func getHabits(for date: Date) -> [HabitElement] {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let dateString = formatter.string(from: date)
+      
+        guard let reportElements = report?.report,
+              let reportForDate = reportElements.first(where: { $0.date == dateString }) else {
+          
+            return habits.map { habit in
+                var updatedHabit = habit
+                updatedHabit.completed = false
+                return updatedHabit
+            }
+        }
+        
+        return habits.map { habit in
+            var updatedHabit = habit
+            if let matched = reportForDate.habits?.first(where: { $0.name == habit.name }) {
+                updatedHabit.completed = matched.completed ?? false
+            } else {
+                updatedHabit.completed = false
+            }
+            return updatedHabit
+        }
+    }
 }
