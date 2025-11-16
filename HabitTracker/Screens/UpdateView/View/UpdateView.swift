@@ -125,7 +125,7 @@ struct UpdateView: View {
             }
         }
         .sheet(isPresented: $showingAddHabit) {
-            AddHabitView(viewModel: viewModel.getAddHabitVM())
+            AddHabitView()
         }
         .onAppear {
             if !viewModel.habits.isEmpty {

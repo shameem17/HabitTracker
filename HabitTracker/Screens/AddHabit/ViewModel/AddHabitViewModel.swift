@@ -16,8 +16,10 @@ final class AddHabitViewModel: ObservableObject{
     @Published var errorMessage: String?
     @Published var showSuccess: Bool = false
     @Published var isHabitAdded: Bool = false
-    weak var addHabitDelegate: AddNewHabitProtocol?
+    @Published var reloadOnSuccess: Bool = false
     
+    // Use centralized data manager
+    private let dataManager = HabitDataManager.shared
     private let apiService: AddHabitProtocol = AddHabitService()
     // MARK: - Private Properties
 
@@ -104,32 +106,41 @@ extension AddHabitViewModel{
     // MARK: - API Methods
     @MainActor
     func addHabit(name: String, icon: String) {
+        guard !name.isEmpty else {
+            showErrorMessage("Habit name cannot be empty")
+            return
+        }
         
         isLoading = true
         clearErrors()
         showSuccess = false
+        
         apiService.addHabit(name: name, icon: icon) { [weak self] result in
-            self?.isLoading = false
-            switch result {
-            case .success(_):
-                print("Habit added successfully")
-                self?.showSuccess = true
-                self?.updateList(name: name, icon: icon)
-            case .failure(let error):
-                print("Failed to add habit: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                
+                switch result {
+                case .success(_):
+                    print("Habit added successfully")
+                    
+                    // Add to centralized data manager
+                    let newHabit = HabitElement(name: name, icon: icon, completed: false)
+                    self?.dataManager.addHabit(newHabit)
+                    
+                    // Refresh data from API to get the latest state
+                    self?.dataManager.fetchAllData()
+                    
+                    self?.showSuccess = true
+                    self?.isHabitAdded = true
+                    self?.reloadOnSuccess = true
+                case .failure(let error):
+                    print("Failed to add habit: \(error.localizedDescription)")
+                    self?.showErrorMessage("Failed to add habit. Please try again.")
+                }
             }
         }
-        
-        
     }
-    
-    private func updateList(name: String, icon: String){
-        DispatchQueue.main.async{[weak self] in
-            //self?.updateVM.addNewHabit(name: name, icon: icon)
-            self?.addHabitDelegate?.addNewHabit(name: name, icon: name)
-        }
-    }
-    
+        
     // MARK: - Helper Methods
     private func showErrorMessage(_ message: String) {
         errorMessage = message

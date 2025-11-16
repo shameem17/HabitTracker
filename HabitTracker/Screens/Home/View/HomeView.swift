@@ -10,12 +10,13 @@ import SwiftUI
 struct HomeView: View {
     // private var
     @State private var selected = 0
-  
+    @State private var showingAddHabit = false
     @EnvironmentObject var themeManager: ThemeManager
     internal let viewHelper = ViewHelper()
     @StateObject internal var viewModel: HomeViewmodel = HomeViewmodel()
     @State var showProfile: Bool = false
-    
+    // Use centralized data manager
+    @StateObject private var dataManager = HabitDataManager.shared
     var body: some View {
         NavigationStack {
             ZStack {
@@ -38,7 +39,7 @@ struct HomeView: View {
                             HomeScreen
                         }
                     } else if selected == 1 {
-                        UpdateView(viewModel: viewModel.getTodayViewModel())
+                        UpdateView(viewModel: UpdateViewModel())
                     } else if selected == 2 {
                         SettingsView()
                     }
@@ -54,10 +55,11 @@ struct HomeView: View {
         .navigationBarHidden(true)
        
         .ignoresSafeArea(edges: .bottom)
-       
+        .sheet(isPresented: $showingAddHabit) {
+            AddHabitView()
+        }
         .task {
-            viewModel.getReport()
-            viewModel.getHabits()
+            dataManager.fetchAllData()
         }
     }
 }

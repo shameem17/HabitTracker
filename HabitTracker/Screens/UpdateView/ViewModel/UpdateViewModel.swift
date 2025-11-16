@@ -6,49 +6,63 @@
 //
 
 import Foundation
-
-protocol AddNewHabitProtocol: AnyObject {
-    func addNewHabit(name: String, icon: String)
-}
+import Combine
 
 final class UpdateViewModel: ObservableObject{
-    @Published var apiLoding: Bool = false
-    @Published var errorMessage: String?
+    // Use centralized data manager
+    private let dataManager = HabitDataManager.shared
     @Published private var updatingList: [HabitElement] = []
-    @Published var habits: [HabitElement]
-    @Published var showAllHabits: Bool
+    @Published var showAllHabits: Bool = false
     @Published var isLoading: Bool = false
+    @Published var refreshId = UUID()
     private var apiService: UpdateHabitProtocol = UpdateHabitService()
-    private var report: Report?
-
+    private var cancellables = Set<AnyCancellable>()
     private var dateHelper: DateHelperProtocol
+    
+    // Computed properties that reference centralized data
+    var apiLoding: Bool { dataManager.isLoading }
+    var errorMessage: String? { dataManager.errorMessage }
+    var habits: [HabitElement] { dataManager.getTodaysHabits() }
+    
     var hasLatestUpdates: Bool{
         return !updatingList.isEmpty
     }
     
     init(dateHelper: DateHelperProtocol = DateHelper()){
         self.dateHelper = dateHelper
-        self.showAllHabits = false
-        habits = []
+        setupDataManagerObservers()
+    }
+    
+    private func setupDataManagerObservers() {
+        // Subscribe to habit changes from centralized data manager
+        dataManager.$habits
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.refreshId = UUID()
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+            
+        dataManager.$report
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.refreshId = UUID()
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
     }
     
     public static func getTodayViewModel(report: Report?, habits: [HabitElement]) -> UpdateViewModel{
+        // This method is now just for compatibility - actual data comes from centralized manager
         let viewModel = UpdateViewModel()
-        viewModel.report = report
-        viewModel.habits = habits
         return viewModel
     }
          
 }
 
 extension UpdateViewModel{
-    private func resetLoading(loading: Bool){
-        DispatchQueue.main.async{[weak self] in
-            self?.apiLoding = loading
-        }
-    }
     func formattedToday()->String{
-        return dateHelper.getTodayDate()
+        return dataManager.getFormattedToday()
     }
     
     func addUpdatedHabit(habitName: String, completed: Bool){
@@ -57,6 +71,9 @@ extension UpdateViewModel{
             return
         }
         self.updatingList.append(HabitElement(name: habitName, icon: nil, completed: completed))
+        
+        // Update the centralized data manager
+        dataManager.updateHabitStatus(habitName: habitName, isCompleted: completed)
     }
     
     func clearUpdatedList(){
@@ -64,20 +81,10 @@ extension UpdateViewModel{
     }
     
     func prepareTodayHabit(){
-        self.resetLoading(loading: true)
-        let today = self.report?.report?.filter({ dateHelper.isDateToday(date: $0.date) }).first
-        habits = habits.map { habit in
-            var updatedHabit = habit
-            if let todayHabits = today?.habits,
-               let matched = todayHabits.first(where: { $0.name == habit.name }) {
-                updatedHabit.completed = matched.completed
-            } else {
-                updatedHabit.completed = false
-            }
-            return updatedHabit
-        }
-        self.resetLoading(loading: false)
         self.showAllHabits = true
+        DispatchQueue.main.async {
+            self.refreshId = UUID()
+        }
     }
     func isHabitsEmpty() -> Bool {
         return habits.isEmpty
@@ -110,7 +117,7 @@ extension UpdateViewModel{
             switch result {
             case .success(_):
                 print("Habit updated successfully")
-                self?.clearUpdatedList()
+                self?.dataManager.fetchAllData()
             case .failure(let error):
                 if error == .authRequired {
                     self?.logout()
@@ -122,15 +129,4 @@ extension UpdateViewModel{
     }
 }
 
-extension UpdateViewModel: AddNewHabitProtocol{
-    func getAddHabitVM() -> AddHabitViewModel{
-        let addHabitVM = AddHabitViewModel()
-        addHabitVM.addHabitDelegate = self
-        return addHabitVM
-    }
-    func addNewHabit(name: String, icon: String) {
-        print("new habit added \(name)")
-        self.habits.append(HabitElement(name: name, icon: icon, completed: false))
-        self.prepareTodayHabit()
-    }
-}
+

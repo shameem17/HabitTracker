@@ -12,7 +12,7 @@ struct AddHabitView: View {
     @State private var habitName: String = ""
     @State private var selectedIcon: String = "star.fill"
     @State private var showingIconPicker = false
-    @StateObject var viewModel: AddHabitViewModel
+    @StateObject var viewModel: AddHabitViewModel = AddHabitViewModel()
     
     var body: some View {
         NavigationView {

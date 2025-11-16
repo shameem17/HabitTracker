@@ -5,6 +5,7 @@
 //  Created by Shameem on 22/9/25.
 //
 import Foundation
+import Combine
 
 
 
@@ -24,108 +25,97 @@ enum HomeTab: Int, CaseIterable {
 
 
 final class HomeViewmodel: ObservableObject{
-    let apiService: HomeServiceProtocol
-    @Published var apiLoding: Bool = false
-    @Published var errorMessage: String?
-    private var report: Report?
-    @Published var habits: [HabitElement] = []
+    // Use centralized data manager instead of local properties
+    private let dataManager = HabitDataManager.shared
     @Published var showContent: Bool = false
     @Published var reportDict: [ReportData] = []
-    private var todayReport: ReportElement?
     private var alreadyLoggedOut: Bool = false
     private var dateHelper: DateHelperProtocol
+    private var cancellables = Set<AnyCancellable>()
     
-    init(apiService: HomeServiceProtocol = HomeService(),
-         dateHelper: DateHelperProtocol = DateHelper()) {
-        self.apiService = apiService
+    // Computed properties that reference centralized data
+    var apiLoding: Bool { dataManager.isLoading }
+    var errorMessage: String? { dataManager.errorMessage }
+    var habits: [HabitElement] { dataManager.habits }
+    var report: Report? { dataManager.report }
+    
+    init(dateHelper: DateHelperProtocol = DateHelper()) {
         self.dateHelper = dateHelper
+        // Subscribe to data manager changes
+        setupDataManagerObservers()
     }
     
-    func getData(){
-        getReport()
-    }
-        
-    
-    func getReport(){
-        self.resetLoading(loading: true)
-        apiService.getReport(day: "7"){[weak self] result in
-            self?.resetLoading(loading: false)
-            switch result{
-            case .success(let report):
-                DispatchQueue.main.async{
-                    self?.report = report
-                    self?.getTodayReport()
+    private func setupDataManagerObservers() {
+        dataManager.$habits
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+            
+        dataManager.$report
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] report in
+                if let report = report {
                     self?.buildLast7DaysDict(from: report)
                     self?.showContent = true
                 }
-            case .failure(let error):
-                if error == .authRequired{
-                    self?.logout()
-                }
-                print("error is \(error)")
+                self?.objectWillChange.send()
             }
-        }
+            .store(in: &cancellables)
+            
+        dataManager.$isLoading
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
     }
+    
+    func getData(){
+        dataManager.fetchAllData()
+    }
+    
+    func getReport(){
+        dataManager.fetchReport()
+    }
+    
     func getHabits(){
-        self.resetLoading(loading: true)
-        apiService.getHabits {[weak self] result in
-            self?.resetLoading(loading: false)
-            switch result{
-            case .success(let habitResponse):
-                DispatchQueue.main.async{
-                    self?.habits = habitResponse.habits ?? []
-                }
-            case .failure(let error):
-                if error == .authRequired{
-                    self?.logout()
-                }
-                print("error is \(error)")
-            }
-        }
+        dataManager.fetchHabits()
     }
+    
+    // Add method to refresh habits after adding new ones
+    func refreshHabitsAfterAdd() {
+        dataManager.fetchHabits()
+    }
+    
     func formattedToday()->String{
-        return dateHelper.getTodayDate()
+        return dataManager.getFormattedToday()
     }
     
     func getTodayProgress()->Double{
-        if todayReport == nil{
-            return 0.001
-        }
-        let doneCount = Double(todayReport?.done ?? 0)
-        let undoneCount = Double(totalCount()) - doneCount
-        return Double(doneCount/(doneCount + undoneCount))
-    }
-    func doneUndoneCount()->(done: Int, undone: Int){
-        if todayReport == nil{
-            return (0,self.report?.totalHabitCount ?? 0)
-        }
-        return (todayReport?.done ?? 0, todayReport?.undone ?? 0)
+        return dataManager.getTodayProgress()
     }
     
-    private func resetLoading(loading: Bool){
-        DispatchQueue.main.async{[weak self] in
-            self?.apiLoding = loading
-        }
+    func doneUndoneCount()->(done: Int, undone: Int){
+        return dataManager.getDoneUndoneCount()
     }
 }
 
 extension HomeViewmodel{
-    private func getTodayReport(){
-        guard let report = report?.report else { return }
-        let filterReport = report.filter( {
-            dateHelper.isDateToday(date: $0.date ?? "")
-        })
-        todayReport = filterReport.first
-    }
     func totalCount()->Int{
-        return report?.totalHabitCount ?? 0
+        return dataManager.totalHabitCount
     }
     func isHabitsEmpty() -> Bool {
-        return habits.isEmpty
+        return dataManager.isHabitsEmpty()
     }
     
     func getHabitsCount() -> Int {
-        return habits.count
+        return dataManager.getHabitsCount()
+    }
+    
+    func getTodayViewModel() -> UpdateViewModel {
+        return UpdateViewModel.getTodayViewModel(report: dataManager.report, habits: dataManager.habits)
     }
 }
 
@@ -151,6 +141,7 @@ extension HomeViewmodel{
         return calendar.component(.day, from: today)
     }
     func buildLast7DaysDict(from apiResponse: Report) {
+        self.reportDict = []
         var result: [String: [Int]] = [:]
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyy-MM-dd"
@@ -202,10 +193,6 @@ extension HomeViewmodel{
             alreadyLoggedOut = true
             NotificationCenter.default.post(name: .logout, object: nil)
         }
-    }
-    
-    func getTodayViewModel() -> UpdateViewModel {
-        return UpdateViewModel.getTodayViewModel(report: self.report, habits: self.habits)
     }
    
 }

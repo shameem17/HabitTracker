@@ -11,7 +11,7 @@ import Foundation
 struct Report: Codable {
     let success: Bool?
     let totalHabitCount: Int?
-    let report: [ReportElement]?
+    var report: [ReportElement]?
 }
 
 // MARK: - ReportElement
@@ -19,10 +19,10 @@ struct ReportElement: Codable {
     let date: String?
     let done: Int?
     let undone: Int?
-    let habits: [HabitsReport]?
+    var habits: [HabitsReport]?
 }
 
 struct HabitsReport: Codable {
     let name: String?
-    let completed: Bool?
+    var completed: Bool?
 }
