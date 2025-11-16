@@ -21,7 +21,7 @@ struct HomeView: View {
         NavigationStack {
             ZStack {
                 VStack {
-                    Spacer()
+                
                     HomeHeaderView(dateText: self.viewModel.formattedToday(),
                                    title: self.viewModel.getPageTitle(for: selected), showProfile: $showProfile)
                     
@@ -33,10 +33,13 @@ struct HomeView: View {
                                 .scaleEffect(2)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                         }
-                       else if viewModel.totalCount() == 0 && !viewModel.apiLoding {
+                        else if viewModel.totalCount() == 0 && viewModel.showContent {
                             EmptyStateView()
-                        } else {
+                       } else if viewModel.showContent{
                             HomeScreen
+                        }
+                        else{
+                            Spacer()
                         }
                     } else if selected == 1 {
                         UpdateView(viewModel: UpdateViewModel())

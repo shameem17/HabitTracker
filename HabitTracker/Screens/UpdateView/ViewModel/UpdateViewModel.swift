@@ -73,7 +73,7 @@ extension UpdateViewModel{
         self.updatingList.append(HabitElement(name: habitName, icon: nil, completed: completed))
         
         // Update the centralized data manager
-        dataManager.updateHabitStatus(habitName: habitName, isCompleted: completed)
+       // dataManager.updateHabitStatus(habitName: habitName, isCompleted: completed)
     }
     
     func clearUpdatedList(){
@@ -117,7 +117,10 @@ extension UpdateViewModel{
             switch result {
             case .success(_):
                 print("Habit updated successfully")
+                self?.clearUpdatedList()
                 self?.dataManager.fetchAllData()
+                self?.updateChanges(habits: list.habits)
+                self?.refreshId = UUID()
             case .failure(let error):
                 if error == .authRequired {
                     self?.logout()
@@ -126,6 +129,11 @@ extension UpdateViewModel{
             }
         }
             
+    }
+    func updateChanges(habits: [HabitClass]){
+        habits.forEach { habit in
+            dataManager.updateHabitStatus(habitName: habit.name, isCompleted: habit.complete)
+        }
     }
 }
 

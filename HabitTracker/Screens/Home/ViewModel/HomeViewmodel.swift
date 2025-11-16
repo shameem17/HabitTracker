@@ -29,12 +29,21 @@ final class HomeViewmodel: ObservableObject{
     private let dataManager = HabitDataManager.shared
     @Published var showContent: Bool = false
     @Published var reportDict: [ReportData] = []
+    @Published var isEmpty: Bool = true
     private var alreadyLoggedOut: Bool = false
     private var dateHelper: DateHelperProtocol
     private var cancellables = Set<AnyCancellable>()
     
     // Computed properties that reference centralized data
-    var apiLoding: Bool { dataManager.isLoading }
+    var apiLoding: Bool {
+        get{
+            dataManager.isLoading
+        }
+        set{
+            dataManager.isLoading = newValue
+        }
+        
+    }
     var errorMessage: String? { dataManager.errorMessage }
     var habits: [HabitElement] { dataManager.habits }
     var report: Report? { dataManager.report }
@@ -141,6 +150,7 @@ extension HomeViewmodel{
         return calendar.component(.day, from: today)
     }
     func buildLast7DaysDict(from apiResponse: Report) {
+        self.apiLoding = true
         self.reportDict = []
         var result: [String: [Int]] = [:]
         let dateFormatter = DateFormatter()
@@ -176,6 +186,7 @@ extension HomeViewmodel{
             let data = ReportData(date: date, day: day, done: d, undone: u)
             self.reportDict.append(data)
         }
+        self.apiLoding = false
     }
     
     func get7DaysReport() -> [ReportData] {

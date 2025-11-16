@@ -103,6 +103,9 @@ struct UpdateView: View {
                         }
                     }
                 }
+                else{
+                    Spacer()
+                }
             }
             VStack {
                 Spacer()
