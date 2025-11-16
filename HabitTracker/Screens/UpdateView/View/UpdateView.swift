@@ -14,7 +14,7 @@ struct UpdateView: View {
         ZStack{
             VStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Your Habits \(viewModel.getFormattedSelectedDate())")
+                    Text("Your Habits")
                         .font(.poppinsTitle3)
                         .fontWeight(.semibold)
                         .foregroundColor(.primary)
@@ -107,6 +107,7 @@ struct UpdateView: View {
                             }
                             .buttonStyle(PlainButtonStyle())
                         }
+                        .padding(.horizontal)
                     }
                 }
                 else{
@@ -147,5 +148,10 @@ struct UpdateView: View {
         // Here you would typically update the habit status via API
         print("Habit '\(habit.name ?? "")' completion status changed to: \(isCompleted)")
         viewModel.addUpdatedHabit(habitName: habit.name ?? "", completed: isCompleted)
+    }
+    
+    private func deleteHabit(_ habit: HabitElement) {
+        guard let habitName = habit.name else { return }
+        viewModel.deleteHabit(habitName: habitName)
     }
 }

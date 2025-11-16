@@ -81,6 +81,7 @@ extension UpdateViewModel{
     
     func clearUpdatedList(){
         self.updatingList.removeAll()
+        self.refreshId = UUID()
     }
     
     func prepareTodayHabit(){
