@@ -10,7 +10,7 @@ import SwiftUI
 struct HomeView: View {
     // private var
     @State private var selected = 0
-    @State private var showingAddHabit = false
+  
     @EnvironmentObject var themeManager: ThemeManager
     internal let viewHelper = ViewHelper()
     @StateObject internal var viewModel: HomeViewmodel = HomeViewmodel()
@@ -46,28 +46,6 @@ struct HomeView: View {
                     BottomNav(selected: $selected)
                 }
                 
-                // Floating Action Button (only show on today tab)
-                if selected == 1 {
-                    VStack {
-                        Spacer()
-                        HStack {
-                            Spacer()
-                            Button(action: {
-                                showingAddHabit = true
-                            }) {
-                                Image(systemName: "plus")
-                                    .font(.system(size: 20, weight: .bold))
-                                    .foregroundColor(.white)
-                                    .frame(width: 56, height: 56)
-                                    .background(.blue)
-                                    .clipShape(Circle())
-                                    .shadow(radius: 8)
-                            }
-                            .padding(.trailing, 20)
-                            .padding(.bottom, 100) // Position above bottom nav
-                        }
-                    }
-                }
             }
             .navigationDestination(isPresented: $showProfile) {
                 ProfileView()
@@ -76,9 +54,7 @@ struct HomeView: View {
         .navigationBarHidden(true)
        
         .ignoresSafeArea(edges: .bottom)
-        .sheet(isPresented: $showingAddHabit) {
-            AddHabitView()
-        }
+       
         .task {
             viewModel.getReport()
             viewModel.getHabits()

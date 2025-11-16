@@ -12,7 +12,7 @@ struct AddHabitView: View {
     @State private var habitName: String = ""
     @State private var selectedIcon: String = "star.fill"
     @State private var showingIconPicker = false
-    @StateObject private var viewModel = AddHabitViewModel()
+    @StateObject var viewModel: AddHabitViewModel
     
     var body: some View {
         NavigationView {
@@ -65,6 +65,11 @@ struct AddHabitView: View {
                 }
             }
             .padding(20)
+        }
+        .onChange(of: viewModel.showSuccess) { _ in
+            if viewModel.showSuccess{
+                dismiss()
+            }
         }
         .sheet(isPresented: $showingIconPicker) {
             IconPickerView(selectedIcon: $selectedIcon, allIcons: viewModel.getAllIcons())

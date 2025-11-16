@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol AddNewHabitProtocol{
+protocol AddNewHabitProtocol: AnyObject {
     func addNewHabit(name: String, icon: String)
 }
 
@@ -123,8 +123,14 @@ extension UpdateViewModel{
 }
 
 extension UpdateViewModel: AddNewHabitProtocol{
+    func getAddHabitVM() -> AddHabitViewModel{
+        let addHabitVM = AddHabitViewModel()
+        addHabitVM.addHabitDelegate = self
+        return addHabitVM
+    }
     func addNewHabit(name: String, icon: String) {
         print("new habit added \(name)")
-        self.habits.insert(HabitElement(name: name, icon: icon, completed: false), at: 0)
+        self.habits.append(HabitElement(name: name, icon: icon, completed: false))
+        self.prepareTodayHabit()
     }
 }

@@ -9,99 +9,123 @@ import SwiftUI
 
 struct UpdateView: View {
     @StateObject internal var viewModel: UpdateViewModel
-    
+    @State private var showingAddHabit = false
     var body: some View{
-        VStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Your Habtis for Today \(viewModel.formattedToday())")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 20)
-            .padding(.bottom, 20)
-            
-            if viewModel.apiLoding {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .green))
-                    .scaleEffect(2)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if viewModel.showAllHabits {
-                if viewModel.isHabitsEmpty() {
-                    // Empty state
-                    VStack(spacing: 20) {
-                        Image(systemName: "list.bullet.clipboard")
-                            .font(.system(size: 60))
-                            .foregroundColor(.secondary)
-                        
-                        Text("No Habits Yet")
-                            .font(.poppinsTitle2)
-                            .fontWeight(.semibold)
-                        
-                        Text("Add your first habit to start tracking your progress")
-                            .font(.poppinsBody)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else {
-                    // Scrollable habits list
-                    ScrollView {
-                        LazyVStack(spacing: 12) {
-                            ForEach(viewModel.habits, id: \.id) { habit in
-                                HabitRowView(
-                                    habit: habit
-                                ) { isCompleted in
-                                    updateHabitStatus(habit: habit, isCompleted: isCompleted)
+        ZStack{
+            VStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Your Habtis for Today \(viewModel.formattedToday())")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
+                
+                if viewModel.apiLoding {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .green))
+                        .scaleEffect(2)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if viewModel.showAllHabits {
+                    if viewModel.isHabitsEmpty() {
+                        // Empty state
+                        VStack(spacing: 20) {
+                            Image(systemName: "list.bullet.clipboard")
+                                .font(.system(size: 60))
+                                .foregroundColor(.secondary)
+                            
+                            Text("No Habits Yet")
+                                .font(.poppinsTitle2)
+                                .fontWeight(.semibold)
+                            
+                            Text("Add your first habit to start tracking your progress")
+                                .font(.poppinsBody)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else {
+                        // Scrollable habits list
+                        ScrollView {
+                            LazyVStack(spacing: 12) {
+                                ForEach(viewModel.habits, id: \.id) { habit in
+                                    HabitRowView(
+                                        habit: habit
+                                    ) { isCompleted in
+                                        updateHabitStatus(habit: habit, isCompleted: isCompleted)
+                                    }
                                 }
                             }
+                            .padding(.horizontal, 16)
+                            .padding(.top, 16)
+                            .padding(.bottom, 100) // Extra padding for floating button
                         }
-                        .padding(.horizontal, 16)
-                        .padding(.top, 16)
-                        .padding(.bottom, 100) // Extra padding for floating button
-                    }
-                    Spacer()
-                    HStack(spacing: 12) {
-                        Button(action: {
-                            //saveHabit()
-                            print("update habits")
-                            viewModel.updateHabit()
-                        }) {
-                            if viewModel.isLoading {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                    .scaleEffect(0.8)
-                            } else{
-                                Text("Update Habit")
-                                    .font(.poppinsHeadline)
-                                  
+                        Spacer()
+                        HStack(spacing: 12) {
+                            Button(action: {
+                                //saveHabit()
+                                print("update habits")
+                                viewModel.updateHabit()
+                            }) {
+                                if viewModel.isLoading {
+                                    ProgressView()
+                                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                        .scaleEffect(0.8)
+                                } else{
+                                    Text("Update Habit")
+                                        .font(.poppinsHeadline)
+                                    
+                                }
                             }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 50)
+                            .background(viewModel.hasLatestUpdates ? .blue : .gray)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .disabled(!viewModel.hasLatestUpdates)
+                            
+                            Button(action: {
+                                //dismiss()
+                                print("clear")
+                                viewModel.clearUpdatedList()
+                            }) {
+                                Text("Cancel")
+                                    .font(.poppinsHeadline)
+                                    .foregroundColor(.primary)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 50)
+                                    .background(.gray.opacity(0.2))
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                            }
+                            .buttonStyle(PlainButtonStyle())
                         }
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 50)
-                        .background(viewModel.hasLatestUpdates ? .blue : .gray)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .disabled(!viewModel.hasLatestUpdates)
-                        
-                        Button(action: {
-                            //dismiss()
-                            print("clear")
-                            viewModel.clearUpdatedList()
-                        }) {
-                            Text("Cancel")
-                                .font(.poppinsHeadline)
-                                .foregroundColor(.primary)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 50)
-                                .background(.gray.opacity(0.2))
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                        }
-                        .buttonStyle(PlainButtonStyle())
                     }
                 }
             }
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        showingAddHabit = true
+                    }) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundColor(.white)
+                            .frame(width: 56, height: 56)
+                            .background(.blue)
+                            .clipShape(Circle())
+                            .shadow(radius: 8)
+                    }
+                    .padding(.trailing, 20)
+                    .padding(.bottom, 100) // Position above bottom nav
+                }
+            }
+        }
+        .sheet(isPresented: $showingAddHabit) {
+            AddHabitView(viewModel: viewModel.getAddHabitVM())
         }
         .onAppear {
             if !viewModel.habits.isEmpty {
