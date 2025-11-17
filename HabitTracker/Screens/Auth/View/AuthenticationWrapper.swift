@@ -10,10 +10,15 @@ import SwiftUI
 struct AuthenticationWrapper: View {
     @StateObject private var authViewModel = AuthViewModel()
     @EnvironmentObject var themeManager: ThemeManager
+    @State private var showSplash = true
     
     var body: some View {
         Group {
-            if authViewModel.isAuthenticated {
+            if showSplash {
+                // Splash Screen
+                SplashScreenView()
+                    .transition(.opacity)
+            } else if authViewModel.isAuthenticated {
                 // Main App Content
                 HomeView()
                     .environmentObject(authViewModel)
@@ -31,7 +36,16 @@ struct AuthenticationWrapper: View {
                     ))
             }
         }
+        .animation(.easeInOut(duration: 0.5), value: showSplash)
         .animation(.easeInOut(duration: 0.5), value: authViewModel.isAuthenticated)
+        .onAppear {
+           
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
+                withAnimation {
+                    showSplash = false
+                }
+            }
+        }
     }
 }
 

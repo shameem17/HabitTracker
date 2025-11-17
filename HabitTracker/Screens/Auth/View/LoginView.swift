@@ -10,6 +10,7 @@ import SwiftUI
 struct LoginView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @State private var showingSignup = false
+    @State private var showingForgotPassword = false
     @State private var showPassword = false
     @State private var path = NavigationPath()
     var body: some View {
@@ -34,6 +35,10 @@ struct LoginView: View {
             .navigationDestination(for: String.self, destination: { _ in
                 SignupView()
             })
+            .sheet(isPresented: $showingForgotPassword) {
+                ForgotPasswordView()
+                    .environmentObject(authViewModel)
+            }
         }
         .alert("Error", isPresented: $authViewModel.showError) {
             Button("OK", role: .cancel) { }
@@ -153,7 +158,7 @@ extension LoginView {
             HStack {
                 Spacer()
                 Button("Forgot Password?") {
-                    // TODO: Implement forgot password
+                    showingForgotPassword = true
                 }
                 .font(.poppinsBody)
                 .foregroundColor(.blue)

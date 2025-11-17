@@ -149,9 +149,4 @@ struct UpdateView: View {
         print("Habit '\(habit.name ?? "")' completion status changed to: \(isCompleted)")
         viewModel.addUpdatedHabit(habitName: habit.name ?? "", completed: isCompleted)
     }
-    
-    private func deleteHabit(_ habit: HabitElement) {
-        guard let habitName = habit.name else { return }
-        viewModel.deleteHabit(habitName: habitName)
-    }
 }
