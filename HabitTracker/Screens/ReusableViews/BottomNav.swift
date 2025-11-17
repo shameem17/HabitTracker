@@ -102,7 +102,7 @@ struct TabButton: View {
                                     endPoint: .bottomTrailing
                                 )
                             )
-                            .frame(width: 48, height: 48)
+                            .frame(width: 40, height: 40)
                             .matchedGeometryEffect(id: "TAB", in: animation)
                             .shadow(
                                 color: Color(hex: "667eea").opacity(0.4),
@@ -116,7 +116,7 @@ struct TabButton: View {
                         .font(.system(size: 22, weight: .semibold))
                         .foregroundColor(isSelected ? .white : .secondary)
                 }
-                .frame(height: 48)
+                .frame(height: 40)
                 
                 Text(title)
                     .font(.poppinsCustomRegular(size: 11))

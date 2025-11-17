@@ -13,6 +13,9 @@ struct ActivityRingCard: View {
     var total: Int
     var done: Int
     
+    @State private var animatedPercentage: Int = 0
+    @State private var timer: Timer?
+    
     var progressPercentage: Int {
         Int(progress * 100)
     }
@@ -84,7 +87,7 @@ struct ActivityRingCard: View {
                     
                     // Center percentage
                     VStack(spacing: 2) {
-                        Text("\(progressPercentage)%")
+                        Text("\(animatedPercentage)%")
                             .font(.system(size: 28, weight: .bold, design: .rounded))
                             .foregroundStyle(
                                 LinearGradient(
@@ -94,6 +97,13 @@ struct ActivityRingCard: View {
                                 )
                             )
                     }
+                }
+                .onAppear {
+                    startCountingAnimation(to: progressPercentage)
+                }
+                .onChange(of: progress) { newValue in
+                    let newPercentage = Int(newValue * 100)
+                    startCountingAnimation(to: newPercentage)
                 }
                 
                 Spacer()
@@ -197,5 +207,43 @@ struct ActivityRingCard: View {
             y: 6
         )
         .padding(.horizontal, 20)
+    }
+    
+    // Discrete counting animation function
+    private func startCountingAnimation(to targetValue: Int) {
+        // Stop any existing timer
+        timer?.invalidate()
+        
+        // Reset to 0 if starting fresh
+        if animatedPercentage == 0 {
+            animatedPercentage = 0
+        }
+        
+        let startValue = animatedPercentage
+        let difference = targetValue - startValue
+        
+        // If no change needed
+        guard difference != 0 else { return }
+        
+        // Calculate duration and increment
+        let totalDuration: TimeInterval = 1 // Total animation duration in seconds
+        let steps = abs(difference)
+        let interval = totalDuration / Double(steps)
+        
+        var currentStep = 0
+        let increment = difference > 0 ? 1 : -1
+        
+        // Create timer that increments one by one
+        timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { timer in
+            currentStep += 1
+            animatedPercentage += increment
+            
+            // Stop when we reach the target
+            if currentStep >= steps {
+                animatedPercentage = targetValue
+                timer.invalidate()
+                self.timer = nil
+            }
+        }
     }
 }
