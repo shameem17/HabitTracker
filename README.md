@@ -1,98 +1,91 @@
 # 🎯 Habit Tracker
 
-A modern, elegant iOS habit tracking application built with SwiftUI that helps users build better habits through beautiful visualizations and intuitive daily tracking.
+A clean, modern, and easy-to-use iOS app built with SwiftUI to help you build better habits. Track your daily routine, visualize your progress, and stay motivated with a beautiful, intuitive interface.
 
 ![Swift](https://img.shields.io/badge/Swift-5.0-orange.svg)
 ![Platform](https://img.shields.io/badge/Platform-iOS%2015.0+-lightgrey.svg)
 ![SwiftUI](https://img.shields.io/badge/UI-SwiftUI-blue.svg)
+[![GitHub - shameem17](https://img.shields.io/badge/GitHub-shameem17-black?logo=github)](https://github.com/shameem17)
+[![YouTube Preview](https://img.shields.io/badge/YouTube-Preview-red?logo=youtube&logoColor=red)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID)
 
 ## ✨ Features
 
 ### 📊 **Activity Tracking & Visualization**
-- **Daily Habit Tracking** - Mark habits as complete/incomplete with a single tap
-- **Progress Ring** - Animated circular progress indicator with counting animation
-- **7-Day Trend Chart** - Visual line chart showing habit completion trends
-- **Activity Summary** - Real-time progress cards showing done/pending habits
-- **Date Navigation** - Browse through your habit history day by day (7 days backward)
+
+- **Daily Habit Tracking** — Mark habits as done or not done with a simple tap.
+- **Progress Ring** — A smooth, animated ring that visually shows your daily progress.
+- **7-Day Trend Chart** — A clean line chart showing how consistent you’ve been over the week.
+- **Activity Summary** — Live summary cards that show how many habits you’ve completed or missed.
+- **Date Navigation** — Easily jump back through the past 7 days to review your progress.
 
 ### ✅ **Habit Management**
-- **Add Custom Habits** - Create habits with custom names and SF Symbol icons
-- **Icon Picker** - Comprehensive SF Symbols library with 150+ categorized icons and search
-- **Time-Based Habits** - Special support for "Bed Time" and "Wakeup Time" with time picker
-- **Swipe to Delete** - Native iOS swipe gesture to remove habits
-- **Update Habits** - Modify habit completion status for any selected date
-- **Batch Updates** - Update multiple habits at once with "Update All" button
+
+- **Add Custom Habits** — Create your own habits with personalized names and SF Symbol icons.
+- **Icon Picker** — Browse a large, organized library of 150+ icons with search support.
+- **Time-Based Habits** — Dedicated options for habits like “Bed Time” and “Wakeup Time.”
+- **Update Habits** — Change habit status for any chosen date.
 
 ### 🔐 **Authentication & Security**
-- **User Authentication** - Secure login and signup functionality
-- **Token Management** - Automatic token refresh on 401/403 errors
-- **Forgot Password** - Password reset flow with email instructions
-- **Persistent Sessions** - User sessions maintained across app launches
-- **Profile Management** - View user profile with logout functionality
 
-### 🎨 **Modern Design & UI/UX**
-- **Glassmorphic Design** - Semi-transparent cards with blur effects
-- **Gradient Themes** - Beautiful purple-blue and teal-green color gradients
-- **Dark Mode Support** - Fully adaptive light/dark theme with elegant transitions
-- **Custom Fonts** - Poppins and OpenSans fonts for modern typography
-- **Animated Splash Screen** - Professional app launch experience
-- **Smooth Animations** - Spring-based transitions and counting animations
-- **Empty States** - Helpful onboarding messages for new users
+- **User Authentication** — Simple and secure login/signup system.
+- **Token Management** — Automatically refreshes tokens when needed.
+- **Forgot Password** — Reset your password through email.
+- **Persistent Sessions** — Stay logged in even after closing the app.
+- **Profile Management** — View user details and log out easily.
 
 ### 📱 **Navigation & Organization**
-- **Tab-Based Navigation** - Summary, Today's Habits, and Settings tabs
-- **Day Slider** - Quick navigation between dates with "Back to Today" button
-- **Date Paginator** - Navigate through habit history with previous/next buttons
-- **Profile Screen** - Full-screen user profile with back navigation
-- **Modal Sheets** - Add habit and forgot password flows
 
-### 📄 **Reporting & Export**
-- **PDF Export** - Generate and share habit reports as PDF documents
-- **iOS Share Sheet** - Save PDFs to Files, AirDrop, email, or cloud storage
-- **Report History** - Access habit completion data for historical dates
+- **Tab Navigation** — Switch effortlessly between Summary, Today, and Settings.
+- **Day Slider** — Move between dates quickly, with a shortcut to return to Today.
+- **Date Paginator** — Navigate your habit history using back/forward buttons.
+- **Profile Screen** — A full-screen, easy-to-navigate user profile.
+- **Modal Sheets** — Clean pop-ups for adding habits and resetting passwords.
 
 ## 🛠 Frameworks & Technologies
 
 ### **Core Frameworks**
-- **SwiftUI** - Modern declarative UI framework for iOS
-- **Combine** - Reactive programming for data flow and state management
-- **Foundation** - Core iOS functionality and utilities
+
+- **SwiftUI** — Building the UI using Apple’s modern declarative framework.
+- **Combine** — Handling data updates reactively across the app.
+- **Foundation** — Core utilities and system functionality.
 
 ### **Networking**
-- **URLSession** - Network requests and API communication
-- **JSONSerialization** - JSON encoding/decoding for API data
-- **Custom Network Layer** - Centralized networking service with retry logic
+
+- **URLSession** — Handles API requests and responses.
+- **JSONSerialization** — Manages JSON-based data.
+- **Custom Network Layer** — A clean, reusable networking system with retry support.
 
 ### **Data Management**
-- **UserDefaults** - Local storage for user preferences and tokens
-- **Singleton Pattern** - Centralized data manager (`HabitDataManager`)
-- **MVVM Architecture** - Clean separation of concerns with ViewModels
+
+- **UserDefaults** — Stores user preferences and session tokens.
+- **Singleton Pattern** — `HabitDataManager` as the central data controller.
+- **MVVM Architecture** — Organizes the app for clarity and scalability.
 
 ### **UI Components**
-- **Custom Charts** - Line charts and progress rings built with SwiftUI shapes
-- **SF Symbols** - Apple's extensive icon library
-- **GeometryReader** - Responsive layouts and dynamic sizing
-- **LazyVStack** - Performance-optimized scrollable lists
 
-### **Design System**
-- **Custom Color Extensions** - Hex color support (`Color(hex: "667eea")`)
-- **Reusable Modifiers** - `.modernCard()`, `.glassmorphic()` for consistent styling
-- **Theme Management** - Centralized design constants and gradients
+- **Custom Charts** — Smooth line charts and progress rings built with SwiftUI.
+- **SF Symbols** — Apple’s built-in icon library.
+- **GeometryReader** — Creates responsive layouts based on screen size.
+- **LazyVStack** — Optimized for smooth scrolling with large lists.
 
 ### **Authentication & Security**
-- **Token-Based Auth** - JWT access and refresh tokens
-- **Secure Storage** - UserDefaults for token persistence
-- **Auto Token Refresh** - Automatic retry mechanism on auth failures
+
+- **Token-Based Auth** — Secure JWT tokens for access and refresh.
+- **Secure Storage** — Tokens stored safely using UserDefaults.
+- **Auto Token Refresh** — Automatically retries protected API calls on failure.
 
 ## 🏗 Architecture
 
 ### **MVVM (Model-View-ViewModel)**
+
 ```
+├── Networks/
+│   ├── BaseRouter.swift
+│   └── NetwrokService.swift
 ├── Models/
 │   ├── Habit.swift
 │   ├── Report.swift
-│   ├── User.swift
-│   └── API Request/Response Models
+│   └── User.swift
 ├── Views/
 │   ├── HomeView.swift
 │   ├── UpdateView.swift
@@ -116,61 +109,62 @@ A modern, elegant iOS habit tracking application built with SwiftUI that helps u
 ```
 
 ### **Key Design Patterns**
-- **Singleton** - `HabitDataManager.shared` for centralized state
-- **Protocol-Oriented** - Service protocols for testability
-- **Dependency Injection** - ViewModels injected via `@StateObject` and `@EnvironmentObject`
-- **Observer Pattern** - `@Published` properties with Combine for reactive updates
-- **Router Pattern** - API endpoint management with custom routers
+
+- **Singleton** — Shared data manager for a unified source of truth.
+- **Protocol-Oriented Design** — Easier testing and cleaner structure.
+- **Dependency Injection** — ViewModels injected using SwiftUI property wrappers.
+- **Observer Pattern** — Live UI updates powered by Combine.
+- **Router Pattern** — Clean API endpoint management.
 
 ## 🎯 Key Features Breakdown
 
 ### **Centralized Data Management**
-All habit and report data is managed through `HabitDataManager.shared`:
-- Single source of truth for app state
-- Automatic synchronization across all views
-- Reactive updates using Combine publishers
-- Efficient API call management with caching
+
+All habit and report data lives inside `HabitDataManager.shared`, giving you:
+
+- A single, reliable source of truth
+- Automatic syncing across screens
+- Real-time updates using Combine
+- Efficient API calls with cached data
+
+### **Scalable**
+
+- Reusable components for both UI and networking.
+
+### **Smart Network Layer**
+
+- Centralized network logic
+- Custom routers built on top of `BaseRouter`
 
 ### **Smart API Integration**
-- Automatic token refresh on authentication failures
-- Retry mechanism with exponential backoff
-- Thread-safe network operations with proper QoS
-- Background processing with main thread UI updates
+
+- Automatically refreshes tokens when needed
+- Retries failed requests with exponential backoff
+- Ensures safe background work and main-thread UI updates
 
 ### **Modern Animations**
-- Discrete counting animation (1, 2, 3... 40%)
-- Spring-based button presses and transitions
-- Matched geometry effects for tab transitions
-- Smooth gradient transitions
+
+- Smooth number-count animations
+- Spring-based transitions
+- Matched geometry effects
+- Elegant gradient animations
 
 ## 📦 Installation
 
-1. Clone the repository
+1. Clone the repo
 2. Open `HabitTracker.xcodeproj` in Xcode
-3. Build and run on iOS 15.0+ simulator or device
-
-## 🎨 Design Philosophy
-
-The app follows a modern, elegant design language with:
-- **Glassmorphism** for depth and hierarchy
-- **Gradient accents** for visual interest
-- **Neumorphism-inspired** shadows and elevation
-- **Minimalist** interface with focus on content
-- **Smooth animations** for delightful interactions
+3. Build and run on an iOS 15+ device or simulator
 
 ## 🚀 Future Enhancements
 
-- Push notifications for habit reminders
-- Habit streaks and achievements
-- Social sharing and challenges
-- Widget support for home screen
+- Push notifications for reminders
+- Habit streak tracking
+- Social challenges and sharing
+- Home screen widgets
 - Apple Watch companion app
 - iCloud sync across devices
-
-## 📄 License
-
-This project is a personal habit tracking application.
+- Report Generation & Export
 
 ---
 
-**Built with ❤️ using SwiftUI**
+**Built with ❤️ using SwiftUI** [![GitHub - shameem17](https://img.shields.io/badge/GitHub-shameem17-black?logo=github)](https://github.com/shameem17) [![YouTube Preview](https://img.shields.io/badge/YouTube-Preview-red?logo=youtube&logoColor=red)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID)
