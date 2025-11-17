@@ -8,37 +8,58 @@
 import SwiftUI
 
 struct HomeView: View {
-    // private var
+    // State variables
     @State private var selected = 0
     @State private var showingAddHabit = false
+    @State private var showProfile: Bool = false
+    
+    // Environment objects
     @EnvironmentObject var themeManager: ThemeManager
+    @Environment(\.colorScheme) var colorScheme
+    
+    // ViewModels
     internal let viewHelper = ViewHelper()
     @StateObject internal var viewModel: HomeViewmodel = HomeViewmodel()
-    @State var showProfile: Bool = false
+    
     // Use centralized data manager
     @StateObject private var dataManager = HabitDataManager.shared
+    
     var body: some View {
         NavigationStack {
             ZStack {
-                VStack {
+                // Modern gradient background
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        colorScheme == .dark ? Color(hex: "1a1a2e") : Color(hex: "f8f9fa"),
+                        colorScheme == .dark ? Color(hex: "16213e") : Color(hex: "e9ecef")
+                    ]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
                 
-                    HomeHeaderView(dateText: self.viewModel.formattedToday(),
-                                   title: self.viewModel.getPageTitle(for: selected), showProfile: $showProfile)
+                VStack(spacing: 0) {
+                    // Header
+                    HomeHeaderView(
+                        dateText: self.viewModel.formattedToday(),
+                        title: self.viewModel.getPageTitle(for: selected),
+                        showProfile: $showProfile
+                    )
                     
                     // Main Content Area
                     if selected == 0 {
                         if viewModel.apiLoding {
                             ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .green))
+                                .progressViewStyle(CircularProgressViewStyle(tint: Color(hex: "667eea")))
                                 .scaleEffect(2)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                         }
                         else if viewModel.totalCount() == 0 && viewModel.showContent {
                             EmptyStateView()
-                       } else if viewModel.showContent{
+                        } else if viewModel.showContent {
                             HomeScreen
                         }
-                        else{
+                        else {
                             Spacer()
                         }
                     } else if selected == 1 {
@@ -47,6 +68,7 @@ struct HomeView: View {
                         SettingsView()
                     }
                     
+                    // Bottom Navigation
                     BottomNav(selected: $selected)
                 }
                 
@@ -56,7 +78,6 @@ struct HomeView: View {
             }
         }
         .navigationBarHidden(true)
-       
         .ignoresSafeArea(edges: .bottom)
         .sheet(isPresented: $showingAddHabit) {
             AddHabitView()

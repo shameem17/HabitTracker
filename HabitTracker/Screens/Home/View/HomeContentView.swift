@@ -26,7 +26,7 @@ struct HomeContentView: View {
                 ContentCard(viewModel: self.viewModel,
                             barColor: .red, done: false)
                 Spacer()
-            }.padding(.horizontal, 20)
+            }.padding(.horizontal, 10)
                 .padding(.top, 10)
             
             LineChartView(data: self.viewModel.reportDict, max: viewModel.totalCount())

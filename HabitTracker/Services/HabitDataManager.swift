@@ -20,6 +20,7 @@ class HabitDataManager: ObservableObject {
     @Published var report: Report?
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var selectedDate: Date = Date()  // For day navigation
     
     // MARK: - Private Properties
     private let homeService: HomeServiceProtocol
@@ -229,6 +230,76 @@ extension HabitDataManager {
         return habits.isEmpty
     }
     
+    // MARK: - Day Navigation Methods
+    
+    /// Navigate to previous day
+    func goToPreviousDay() {
+        let calendar = Calendar.current
+        if let previousDay = calendar.date(byAdding: .day, value: -1, to: selectedDate) {
+            selectedDate = previousDay
+        }
+    }
+    
+    /// Navigate to next day
+    func goToNextDay() {
+        guard canGoToNextDay() else { return }
+        let calendar = Calendar.current
+        if let nextDay = calendar.date(byAdding: .day, value: 1, to: selectedDate) {
+            selectedDate = nextDay
+        }
+    }
+    
+    /// Navigate to today
+    func goToToday() {
+        selectedDate = Date()
+    }
+    
+    /// Check if user can navigate to next day
+    func canGoToNextDay() -> Bool {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let selected = calendar.startOfDay(for: selectedDate)
+        return selected < today
+    }
+    
+    /// Check if selected date is today
+    func isToday() -> Bool {
+        let calendar = Calendar.current
+        return calendar.isDate(selectedDate, inSameDayAs: Date())
+    }
+    
+    /// Get habits for a specific date
+    func getHabits(for date: Date) -> [HabitElement] {
+        let calendar = Calendar.current
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: date)
+        
+        // Find the report for this date
+        guard let reportElement = report?.report?.first(where: { reportDate in
+            guard let reportDateString = reportDate.date else { return false }
+            return reportDateString == dateString
+        }) else {
+            // No report found for this date, return habits with completed = false
+            return habits.map { habit in
+                var updatedHabit = habit
+                updatedHabit.completed = false
+                return updatedHabit
+            }
+        }
+        
+        // Map habits with their completion status for this date
+        return habits.map { habit in
+            var updatedHabit = habit
+            if let matched = reportElement.habits?.first(where: { $0.name == habit.name }) {
+                updatedHabit.completed = matched.completed
+            } else {
+                updatedHabit.completed = false
+            }
+            return updatedHabit
+        }
+    }
+    
     /// Get habits count
     func getHabitsCount() -> Int {
         return habits.count
@@ -237,32 +308,5 @@ extension HabitDataManager {
     /// Get formatted today's date
     func getFormattedToday() -> String {
         return dateHelper.getTodayDate()
-    }
-    
-    /// Get habits for a specific date with completion status
-    func getHabits(for date: Date) -> [HabitElement] {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        let dateString = formatter.string(from: date)
-      
-        guard let reportElements = report?.report,
-              let reportForDate = reportElements.first(where: { $0.date == dateString }) else {
-          
-            return habits.map { habit in
-                var updatedHabit = habit
-                updatedHabit.completed = false
-                return updatedHabit
-            }
-        }
-        
-        return habits.map { habit in
-            var updatedHabit = habit
-            if let matched = reportForDate.habits?.first(where: { $0.name == habit.name }) {
-                updatedHabit.completed = matched.completed ?? false
-            } else {
-                updatedHabit.completed = false
-            }
-            return updatedHabit
-        }
     }
 }

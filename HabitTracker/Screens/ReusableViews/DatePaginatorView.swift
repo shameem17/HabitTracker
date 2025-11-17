@@ -12,67 +12,188 @@ struct DatePaginatorView: View {
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        VStack(spacing: 12) {
-            // Date navigation buttons
-            HStack(spacing: 16) {
-                // Previous day button
+        VStack(spacing: 0) {
+            // Date navigation container
+            HStack(spacing: 20) {
+                // Previous day button with gradient
                 Button(action: {
-                    viewModel.goToPreviousDay()
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        viewModel.goToPreviousDay()
+                    }
                 }) {
-                    Image(systemName: "chevron.left")
-                        .font(.poppinsCustomRegular(size: 14))
-                        .foregroundColor(viewModel.canGoToPreviousDay() ? .white : .gray)
-                        .frame(width: 40, height: 40)
-                        .background(viewModel.canGoToPreviousDay() ? Color.blue : Color.gray.opacity(0.3))
-                        .clipShape(Circle())
-                        .shadow(color: Color.black.opacity(viewModel.canGoToPreviousDay() ? 0.1 : 0), radius: 4, x: 0, y: 2)
+                    ZStack {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color(hex: "667eea"), Color(hex: "764ba2")],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 44, height: 44)
+                            .shadow(
+                                color: Color(hex: "667eea").opacity(0.4),
+                                radius: 8,
+                                x: 0,
+                                y: 4
+                            )
+                        
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white)
+                    }
                 }
-                .buttonStyle(PlainButtonStyle())
+                .buttonStyle(ScaleButtonStyle())
                 
                 Spacer()
                 
-                // Date display
-                VStack(spacing: 4) {
+                // Date display with modern design
+                VStack(spacing: 6) {
                     Text(viewModel.getFormattedSelectedDate())
-                        .font(.poppinsCustomBold(size: 14))
-                        .foregroundColor(.primary)
+                        .font(.poppinsCustomBold(size: 13))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [Color(hex: "667eea"), Color(hex: "764ba2")],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
                     
                     if !viewModel.isToday() {
                         Button(action: {
-                            viewModel.goToToday()
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                viewModel.goToToday()
+                            }
                         }) {
-                            Text("Go to Today")
-                                .font(.poppinsCaption)
-                                .foregroundColor(.blue)
+                            HStack(spacing: 4) {
+                                Image(systemName: "arrow.uturn.left.circle.fill")
+                                    .font(.system(size: 12))
+                                Text("Back to Today")
+                                    .font(.poppinsCaption)
+                            }
+                            .foregroundStyle(
+                                LinearGradient(
+                                    colors: [Color(hex: "11998e"), Color(hex: "38ef7d")],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(
+                                Capsule()
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [
+                                                Color(hex: "11998e").opacity(0.1),
+                                                Color(hex: "38ef7d").opacity(0.1)
+                                            ],
+                                            startPoint: .leading,
+                                            endPoint: .trailing
+                                        )
+                                    )
+                            )
                         }
+                        .buttonStyle(ScaleButtonStyle())
                     }
                 }
                 
                 Spacer()
                 
-                // Next day button
+                // Next day button with gradient or disabled state
                 Button(action: {
-                    viewModel.goToNextDay()
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        viewModel.goToNextDay()
+                    }
                 }) {
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(viewModel.canGoToNextDay() ? .white : .gray)
-                        .frame(width: 40, height: 40)
-                        .background(viewModel.canGoToNextDay() ? Color.blue : Color.gray.opacity(0.3))
-                        .clipShape(Circle())
-                        .shadow(color: Color.black.opacity(viewModel.canGoToNextDay() ? 0.1 : 0), radius: 4, x: 0, y: 2)
+                    ZStack {
+                        Circle()
+                            .fill(
+                                viewModel.canGoToNextDay() ?
+                                LinearGradient(
+                                    colors: [Color(hex: "667eea"), Color(hex: "764ba2")],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ) :
+                                LinearGradient(
+                                    colors: [Color.gray.opacity(0.3), Color.gray.opacity(0.3)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 44, height: 44)
+                            .shadow(
+                                color: viewModel.canGoToNextDay() ? Color(hex: "667eea").opacity(0.4) : Color.clear,
+                                radius: 8,
+                                x: 0,
+                                y: 4
+                            )
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(viewModel.canGoToNextDay() ? .white : .gray.opacity(0.6))
+                    }
                 }
-                .buttonStyle(PlainButtonStyle())
+                .buttonStyle(ScaleButtonStyle())
                 .disabled(!viewModel.canGoToNextDay())
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 12)
+            .padding(.horizontal, 24)
+            .padding(.vertical, 16)
             .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(colorScheme == .dark ? Color(UIColor.systemGray6) : Color(UIColor.systemBackground))
-                    .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
+                ZStack {
+                    // Glassmorphic background
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .fill(colorScheme == .dark ? Color(.systemGray6).opacity(0.3) : Color.white.opacity(0.9))
+                        .background(
+                            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                .fill(.ultraThinMaterial)
+                        )
+                    
+                    // Subtle gradient overlay
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color(hex: "667eea").opacity(0.03),
+                                    Color.clear
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                }
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .strokeBorder(
+                        LinearGradient(
+                            colors: [
+                                Color(hex: "667eea").opacity(0.2),
+                                Color(hex: "764ba2").opacity(0.1)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1
+                    )
+            )
+            .shadow(
+                color: colorScheme == .dark ? Color.black.opacity(0.3) : Color.black.opacity(0.06),
+                radius: 10,
+                x: 0,
+                y: 4
             )
             .padding(.horizontal, 16)
+            .padding(.vertical, 8)
         }
+    }
+}
+
+// Custom button style for scale animation
+struct ScaleButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.94 : 1.0)
+            .animation(.spring(response: 0.2, dampingFraction: 0.7), value: configuration.isPressed)
     }
 }

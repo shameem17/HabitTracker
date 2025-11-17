@@ -118,20 +118,29 @@ struct UpdateView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    Button(action: {
-                        showingAddHabit = true
-                    }) {
-                        Image(systemName: "plus")
-                            .font(.system(size: 20, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 56, height: 56)
-                            .background(.blue)
-                            .clipShape(Circle())
-                            .shadow(radius: 8)
+                        Button(action: {
+                            showingAddHabit = true
+                        }) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 24, weight: .semibold))
+                                .foregroundColor(.white)
+                                .frame(width: 60, height: 60)
+                                .background(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [
+                                            Color(hex: "667eea"),
+                                            Color(hex: "764ba2")
+                                        ]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .clipShape(Circle())
+                                .shadow(color: Color(hex: "667eea").opacity(0.4), radius: 12, x: 0, y: 6)
+                        }
+                        .padding(.trailing, 20)
+                        .padding(.bottom, 60)
                     }
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 100) // Position above bottom nav
-                }
             }
         }
         .sheet(isPresented: $showingAddHabit) {

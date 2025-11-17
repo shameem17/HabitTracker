@@ -88,7 +88,12 @@ extension Font {
         return Font.custom("Poppins-Regular", size: size)
     }
     
-    // OpenSans Bold
+    // Poppins SemiBold
+    static func poppinsSemiBold(size: CGFloat) -> Font {
+        return Font.custom("Poppins-SemiBold", size: size)
+    }
+    
+    // Poppins Bold
     static func poppinsBold(size: CGFloat) -> Font {
         return Font.custom("Poppins-Bold", size: size)
     }
