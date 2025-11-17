@@ -6,7 +6,7 @@ A clean, modern, and easy-to-use iOS app built with SwiftUI to help you build be
 ![Platform](https://img.shields.io/badge/Platform-iOS%2015.0+-lightgrey.svg)
 ![SwiftUI](https://img.shields.io/badge/UI-SwiftUI-blue.svg)
 [![GitHub - shameem17](https://img.shields.io/badge/GitHub-shameem17-black?logo=github)](https://github.com/shameem17)
-[![YouTube Preview](https://img.shields.io/badge/YouTube-Preview-red?logo=youtube&logoColor=red)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID)
+[![YouTube Preview](https://img.shields.io/badge/YouTube-Preview-red?logo=youtube&logoColor=red)](https://youtu.be/y-MUjBzlZFs)
 
 ## ✨ Features
 
@@ -167,4 +167,4 @@ All habit and report data lives inside `HabitDataManager.shared`, giving you:
 
 ---
 
-**Built with ❤️ using SwiftUI** [![GitHub - shameem17](https://img.shields.io/badge/GitHub-shameem17-black?logo=github)](https://github.com/shameem17) [![YouTube Preview](https://img.shields.io/badge/YouTube-Preview-red?logo=youtube&logoColor=red)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID)
+**Built with ❤️ using SwiftUI** [![GitHub - shameem17](https://img.shields.io/badge/GitHub-shameem17-black?logo=github)](https://github.com/shameem17) [![YouTube Preview](https://img.shields.io/badge/YouTube-Preview-red?logo=youtube&logoColor=red)](https://youtu.be/y-MUjBzlZFs)
