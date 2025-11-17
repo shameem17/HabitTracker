@@ -13,9 +13,8 @@ struct DatePaginatorView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Date navigation container
+           
             HStack(spacing: 20) {
-                // Previous day button with gradient
                 Button(action: {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                         viewModel.goToPreviousDay()
@@ -24,15 +23,21 @@ struct DatePaginatorView: View {
                     ZStack {
                         Circle()
                             .fill(
+                                viewModel.canGoToPreviousDay() ?
                                 LinearGradient(
                                     colors: [Color(hex: "667eea"), Color(hex: "764ba2")],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ) :
+                                LinearGradient(
+                                    colors: [Color.gray.opacity(0.3), Color.gray.opacity(0.3)],
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
                                 )
                             )
                             .frame(width: 44, height: 44)
                             .shadow(
-                                color: Color(hex: "667eea").opacity(0.4),
+                                color: viewModel.canGoToPreviousDay() ? Color(hex: "667eea").opacity(0.4) : Color.clear,
                                 radius: 8,
                                 x: 0,
                                 y: 4
@@ -183,7 +188,7 @@ struct DatePaginatorView: View {
                 x: 0,
                 y: 4
             )
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 8)
             .padding(.vertical, 8)
         }
     }

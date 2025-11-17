@@ -88,7 +88,21 @@ struct UpdateView: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
-                            .background(viewModel.hasLatestUpdates ? .blue : .gray)
+                            .background( !viewModel.hasLatestUpdates ?   LinearGradient(
+                                gradient: Gradient(colors: [
+                                    .gray
+                                ]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ) :   LinearGradient(
+                                gradient: Gradient(colors: [
+                                    Color(hex: "667eea"),
+                                    Color(hex: "764ba2")
+                                ]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                            )
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .disabled(!viewModel.hasLatestUpdates)
                             
