@@ -25,8 +25,8 @@ A clean, modern, and easy-to-use iOS app built with SwiftUI to help you build be
 - **Time-Based Habits** — Dedicated options for habits like “Bed Time” and “Wakeup Time.”
 - **Update Habits** — Change habit status for any chosen date.
 
-<img src=".../images/banner1.png" width="100%" alt="Banner">
-<img src=".../images/banner2.png" width="100%" alt="Banner">
+<img src="images/banner1.png" width="100%" alt="Banner">
+<img src="images/banner2.png" width="100%" alt="Banner">
 
 ### 🔐 **Authentication & Security**
 
